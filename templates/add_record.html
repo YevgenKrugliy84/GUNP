@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Додати новий запис до {{ department.name }}</h2>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="last_name">Прізвище:</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="first_name">Ім'я:</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="middle_name">По батькові:</label>
+            <input type="text" id="middle_name" name="middle_name">
+        </div>
+
+        <div class="form-group">
+            <label for="ip_address">IP-адреса:</label>
+            <input type="text" id="ip_address" name="ip_address" required>
+        </div>
+
+        <div class="form-group">
+            <label for="mac_address">MAC-адреса:</label>
+            <input type="text" id="mac_address" name="mac_address" required>
+        </div>
+
+        <div class="form-group">
+            <label for="service">Служба:</label>
+            <input type="text" id="service" name="service" required>
+        </div>
+
+        <div class="form-group">
+            <label for="office">Кабінет:</label>
+            <input type="text" id="office" name="office" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Зберегти</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Слава Україні! 🇺🇦</h1>
+        <p class="lead">Інформаційна система ГУНП у м. Києві</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-blue text-white mb-4">
+                <div class="card-body">
+                    <h3>Наші кольори</h3>
+                    <p>Синій та жовтий - кольори нашої державності, символізують:</p>
+                    <ul>
+                        <li>Синє небо України</li>
+                        <li>Жовті пшеничні поля</li>
+                        <li>Єдність та свободу</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card bg-yellow text-dark mb-4">
+                <div class="card-body">
+                    <h3>Наша місія</h3>
+                    <p>Забезпечення інформаційної безпеки та технологічного розвитку підрозділів поліції Києва</p>
+                    <div class="text-center mt-3">
+                        <img src="{{ url_for('static', filename='gerb.png') }}" alt="Герб України" style="height: 80px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

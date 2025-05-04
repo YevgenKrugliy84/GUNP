@@ -1,0 +1,416 @@
+/* Основні стилі */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Шапка */
+header {
+    background: linear-gradient(to right, #0057b7, #003b7a);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo {
+    height: 60px;
+    margin-right: 20px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+/* Навігація */
+nav {
+    background-color: #0057b7;
+    padding: 0.5rem 0;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Основний контент */
+main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* Стилі для списку підрозділів */
+.departments-list {
+    padding: 20px 0;
+}
+
+.departments-list h2 {
+    color: #0057b7;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.department-card {
+    background: #0057b7;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.department-card:hover {
+    background: #003b7a;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Стилі для сторінки підрозділу */
+.department-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.add-btn {
+    display: inline-block;
+    background: #ffd700;
+    color: #0057b7;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background: #e6c200;
+}
+
+/* Стилі для таблиць */
+.records-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.records-table th, .records-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.records-table th {
+    background-color: #0057b7;
+    color: white;
+}
+
+.records-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.records-table tr:hover {
+    background-color: #e6e6e6;
+}
+
+/* Стилі для форм */
+.form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #0057b7;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.submit-btn {
+    background-color: #0057b7;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #003b7a;
+}
+
+/* Стилі для пошуку */
+.search-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Підвал */
+footer {
+    background-color: #0057b7;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 30px;
+}
+
+/* Адаптація для малих екранів */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .department-card {
+        padding: 15px;
+        height: 50px;
+        font-size: 14px;
+    }
+
+    .records-table th, .records-table td {
+        padding: 8px 10px;
+    }
+}
+:root {
+    --ukraine-blue: #0057B7;
+    --ukraine-yellow: #FFD700;
+    --ukraine-dark-blue: #0033A0;
+    --ukraine-light-blue: #5D8BF4;
+}
+
+/* Патріотичний фон */
+body {
+    background: linear-gradient(to bottom, var(--ukraine-blue) 0%, var(--ukraine-blue) 50%, var(--ukraine-yellow) 50%, var(--ukraine-yellow) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Головний контейнер */
+main {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    padding: 20px;
+}
+
+/* Кнопки у національних кольорах */
+.btn-ukraine {
+    background: linear-gradient(to right, var(--ukraine-blue) 0%, var(--ukraine-blue) 50%, var(--ukraine-yellow) 50%, var(--ukraine-yellow) 100%);
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+/* Хедер */
+header {
+    background-color: var(--ukraine-dark-blue);
+    border-bottom: 3px solid var(--ukraine-yellow);
+}
+
+/* Навігація */
+nav a {
+    color: var(--ukraine-yellow);
+    transition: all 0.3s;
+}
+
+nav a:hover {
+    color: white;
+    text-shadow: 0 0 5px var(--ukraine-yellow);
+}
+
+/* Таблиці */
+.records-table th {
+    background-color: var(--ukraine-blue);
+    color: var(--ukraine-yellow);
+}
+
+/* Форми */
+.form-control:focus {
+    border-color: var(--ukraine-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 87, 183, 0.25);
+}
+
+/* Футер */
+footer {
+    background-color: var(--ukraine-dark-blue);
+    color: var(--ukraine-yellow);
+    border-top: 3px solid var(--ukraine-yellow);
+}
+
+/* Анімація хвилі */
+@keyframes wave {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.wave-decoration {
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%230057B7" opacity=".25"/></svg>');
+    animation: wave 10s linear infinite;
+}
+/* Стилі для сторінки техпідтримки */
+.support-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.flag-divider {
+    display: flex;
+    width: 150px;
+    height: 4px;
+    margin: 15px auto 30px;
+}
+
+.blue-line {
+    flex: 1;
+    background: var(--ukraine-blue);
+}
+
+.yellow-line {
+    flex: 1;
+    background: var(--ukraine-yellow);
+}
+
+.support-form {
+    margin-bottom: 40px;
+}
+
+.support-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid var(--ukraine-blue);
+}
+
+.support-info h3 {
+    color: var(--ukraine-blue);
+    margin-top: 0;
+}
+
+.support-info p {
+    margin-bottom: 10px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: var(--ukraine-blue);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: var(--ukraine-dark-blue);
+}
+
+/* Адаптація для мобільних */
+@media (max-width: 768px) {
+    .support-container {
+        padding: 15px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+}

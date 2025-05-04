@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="departments-list">
+    <h2>Підрозділи</h2>
+    <div class="grid">
+        {% for department in departments %}
+        <a href="{{ url_for('show_department', dept_id=department.id) }}" class="department-card">
+            {{ department.name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

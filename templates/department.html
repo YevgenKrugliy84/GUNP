@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="department-container">
+    <h2>{{ department.name }}</h2>
+    <a href="{{ url_for('add_record', dept_id=department.id) }}" class="add-btn">+ Додати запис</a>
+
+    <table class="records-table">
+        <thead>
+            <tr>
+                <th>ПІБ</th>
+                <th>IP-адреса</th>
+                <th>MAC-адреса</th>
+                <th>Служба</th>
+                <th>Кабінет</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.last_name }} {{ record.first_name }} {{ record.middle_name or '' }}</td>
+                <td>{{ record.ip_address }}</td>
+                <td>{{ record.mac_address }}</td>
+                <td>{{ record.service }}</td>
+                <td>{{ record.office }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

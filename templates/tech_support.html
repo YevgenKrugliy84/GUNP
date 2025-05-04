@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="support-container">
+    <h1>Технічна підтримка</h1>
+    <div class="flag-divider">
+        <div class="blue-line"></div>
+        <div class="yellow-line"></div>
+    </div>
+
+    <div class="support-form">
+        <form method="POST" action="{{ url_for('submit_support_request') }}">
+            <div class="form-group">
+                <label for="name">Ваше ПІБ:</label>
+                <input type="text" id="name" name="name" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="department">Ваш підрозділ:</label>
+                <select id="department" name="department" class="form-control" required>
+                    <option value="">Оберіть підрозділ</option>
+                    {% for department in departments %}
+                    <option value="{{ department.id }}">{{ department.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Контактний email:</label>
+                <input type="email" id="email" name="email" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="issue_type">Тип проблеми:</label>
+                <select id="issue_type" name="issue_type" class="form-control" required>
+                    <option value="">Оберіть тип</option>
+                    <option value="hardware">Проблема з обладнанням</option>
+                    <option value="software">Проблема з ПЗ</option>
+                    <option value="network">Мережеві проблеми</option>
+                    <option value="other">Інше</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Опишіть проблему:</label>
+                <textarea id="description" name="description" rows="5" required class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="urgency">Терміновість:</label>
+                <select id="urgency" name="urgency" class="form-control" required>
+                    <option value="low">Низька</option>
+                    <option value="medium" selected>Середня</option>
+                    <option value="high">Висока</option>
+                    <option value="critical">Критична</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Надіслати запит</button>
+        </form>
+    </div>
+
+    <div class="support-info">
+        <h3>Контакти техпідтримки:</h3>
+        <p><i class="fas fa-phone"></i> Гаряча лінія:0 (97) 885 33 36</p>
+        <p><i class="fas fa-clock"></i> Графік роботи: Пн-Пт 8:00-20:00</p>
+    </div>
+</div>
+{% endblock %}
