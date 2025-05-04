@@ -165,6 +165,10 @@ def submit_support_request():
 def about():
     return render_template('about.html')
 
+@app.route('/ip-calculator')
+def ip_calculator():
+    return render_template('ip_calculator.html')
+
 # Обробка помилок
 @app.errorhandler(404)
 def page_not_found(e):
