@@ -1,38 +1,307 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4">Слава Україні! 🇺🇦</h1>
-        <p class="lead">Інформаційна система ГУНП у м. Києві</p>
+<div class="about-page">
+    <!-- Герой-секція -->
+    <div class="hero-section">
+        <div class="cyber-overlay"></div>
+        <div class="container">
+            <h1 class="cyber-title">Управління інформаційної аналітичної підтримки</h1>
+        </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card bg-blue text-white mb-4">
-                <div class="card-body">
-                    <h3>Наші кольори</h3>
-                    <p>Синій та жовтий - кольори нашої державності, символізують:</p>
-                    <ul>
-                        <li>Синє небо України</li>
-                        <li>Жовті пшеничні поля</li>
-                        <li>Єдність та свободу</li>
-                    </ul>
+    <!-- Місія -->
+    <div class="mission-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mission-card">
+                        <div class="hexagon-bg">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h2><span class="text-blue">Наша</span> <span class="text-yellow">місія</span></h2>
+                        <div class="mission-content">
+                            <p>Забезпечення інформаційної безпеки та технологічного розвитку підрозділів поліції Києва.</p>
+                            <p>Надання оперативної технічної підтримки та впровадження інноваційних рішень для ефективної роботи правоохоронних органів.</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card bg-yellow text-dark mb-4">
-                <div class="card-body">
-                    <h3>Наша місія</h3>
-                    <p>Забезпечення інформаційної безпеки та технологічного розвитку підрозділів поліції Києва</p>
-                    <div class="text-center mt-3">
-                        <img src="{{ url_for('static', filename='gerb.png') }}" alt="Герб України" style="height: 80px;">
+                <div class="col-md-6">
+                    <div class="tech-image">
+                        <img src="{{ url_for('static', filename='images/network.png') }}" alt="IT інфраструктура" class="img-fluid">
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Напрямки діяльності -->
+    <div class="activities-section">
+        <div class="container">
+            <h2 class="section-title">Напрямки <span class="highlight">діяльності</span></h2>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="activity-card">
+                        <div class="activity-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>Кібербезпека</h3>
+                        <p>Захист інфраструктури від кіберзагроз, моніторинг атак </p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="activity-card">
+                        <div class="activity-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3>Мережі</h3>
+                        <p>Побудова та підтримка захищених мереж для підрозділів поліції</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="activity-card">
+                        <div class="activity-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Аналітика</h3>
+                        <p>Обробка даних, статистичні звіти, аналітичні звіти</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="activity-card">
+                        <div class="activity-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>Підтримка</h3>
+                        <p>Цілодобова технічна підтримка працівників поліції</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Технології -->
+    <div class="tech-section">
+        <div class="container">
+            <h2 class="section-title">Використовуємо <span class="highlight">технології</span></h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <img src="{{ url_for('static', filename='images/tech/cisco.png') }}" alt="Cisco">
+                </div>
+                <div class="tech-item">
+                    <img src="{{ url_for('static', filename='images/tech/fortinet.png') }}" alt="Fortinet">
+                </div>
+                <div class="tech-item">
+                    <img src="{{ url_for('static', filename='images/tech/paloalto.png') }}" alt="Palo Alto">
+                </div>
+                <div class="tech-item">
+                    <img src="{{ url_for('static', filename='images/tech/splunk.png') }}" alt="Splunk">
+                </div>
+                <div class="tech-item">
+                    <img src="{{ url_for('static', filename='images/tech/ibm.png') }}" alt="IBM">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Основний дизайн */
+    .about-page {
+        font-family: 'Ubuntu', sans-serif;
+        color: #333;
+    }
+
+    .text-blue {
+        color: #0057b7;
+    }
+
+    .text-yellow {
+        color: #ffd700;
+    }
+
+    .highlight {
+        background: linear-gradient(90deg, #0057b7 0%, #ffd700 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Герой-секція */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                    url('{{ url_for("static", filename="images/cyber-bg.jpg") }}');
+        background-size: cover;
+        background-position: center;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        margin-bottom: 50px;
+    }
+
+    .cyber-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 87, 183, 0.3);
+    }
+
+    .cyber-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 87, 183, 0.7);
+        position: relative;
+    }
+
+    .cyber-subtitle {
+        font-size: 1.5rem;
+        color: #ffd700;
+        position: relative;
+    }
+
+    /* Секція місії */
+    .mission-section {
+        padding: 60px 0;
+    }
+
+    .mission-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0, 87, 183, 0.1);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        border-top: 3px solid #0057b7;
+    }
+
+    .hexagon-bg {
+        width: 80px;
+        height: 80px;
+        background: #0057b7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        margin-bottom: 20px;
+    }
+
+    .hexagon-bg i {
+        color: white;
+        font-size: 30px;
+    }
+
+    .mission-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .mission-content p {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .tech-image {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        height: 100%;
+    }
+
+    .tech-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Секція напрямків */
+    .activities-section {
+        background: #f8f9fa;
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 50px;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .activity-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+        border-top: 3px solid #0057b7;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 87, 183, 0.2);
+    }
+
+    .activity-icon {
+        width: 60px;
+        height: 60px;
+        background: #0057b7;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .activity-card h3 {
+        color: #0057b7;
+        margin-bottom: 15px;
+    }
+
+    /* Секція технологій */
+    .tech-section {
+        padding: 80px 0;
+        background: white;
+    }
+
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 30px;
+        align-items: center;
+    }
+
+    .tech-item {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        height: 100px;
+    }
+
+    .tech-item img {
+        max-width: 100%;
+        max-height: 60px;
+        width: auto;
+        height: auto;
+        filter: grayscale(100%);
+        opacity: 0.7;
+        transition: all 0.3s;
+    }
+
+    .tech-item:hover img {
+        filter: grayscale(0%);
+        opacity: 1;
+    }
+</style>
 {% endblock %}
