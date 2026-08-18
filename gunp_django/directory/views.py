@@ -12,8 +12,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
 from .forms import RecordForm, SupportRequestForm
-from .models import Department, DownloadLog, KnowledgeBaseArticle, Record, SupportRequest
-from .services import generate_chatbot_response
+from .models import Department, DownloadLog, KnowledgeBaseArticle, Record, SpeedtestJob, SupportRequest
+from .services import generate_chatbot_response, run_speedtest_job
 
 logger = logging.getLogger(__name__)
 
@@ -164,23 +164,26 @@ def ip_calculator(request):
     return render(request, 'directory/ip_calculator.html')
 
 
+@require_POST
+def start_speedtest(request):
+    """Kicks off a speed test in a background thread and returns immediately
+    with a job id, instead of blocking the request for ~10-30s."""
+    job = SpeedtestJob.objects.create()
+    run_speedtest_job(job.id)
+    return JsonResponse({'job_id': job.id, 'status': job.status})
+
+
 @require_GET
-def run_speedtest(request):
-    try:
-        import speedtest
-        st = speedtest.Speedtest()
-        st.get_best_server()
-        download_speed = st.download() / 1_000_000
-        upload_speed = st.upload() / 1_000_000
-        return JsonResponse({
-            'download': round(download_speed, 2),
-            'upload': round(upload_speed, 2),
-            'ping': round(st.results.ping, 2),
-            'server': st.results.server['name'],
-        })
-    except Exception as e:
-        logger.error('Speedtest failed: %s', e)
-        return JsonResponse({'error': str(e)})
+def speedtest_status(request, job_id):
+    job = get_object_or_404(SpeedtestJob, pk=job_id)
+    return JsonResponse({
+        'status': job.status,
+        'download': job.download_mbps,
+        'upload': job.upload_mbps,
+        'ping': job.ping_ms,
+        'server': job.server_name,
+        'error': job.error_message or None,
+    })
 
 
 @require_POST

@@ -98,3 +98,26 @@ class DownloadLog(models.Model):
 
     def __str__(self):
         return f'{self.filename} @ {self.downloaded_at:%Y-%m-%d %H:%M}'
+
+
+class SpeedtestJob(models.Model):
+    STATUS_RUNNING = 'running'
+    STATUS_DONE = 'done'
+    STATUS_ERROR = 'error'
+    STATUS_CHOICES = [
+        (STATUS_RUNNING, 'Виконується'),
+        (STATUS_DONE, 'Завершено'),
+        (STATUS_ERROR, 'Помилка'),
+    ]
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_RUNNING)
+    download_mbps = models.FloatField(null=True, blank=True)
+    upload_mbps = models.FloatField(null=True, blank=True)
+    ping_ms = models.FloatField(null=True, blank=True)
+    server_name = models.CharField(max_length=200, blank=True)
+    error_message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']

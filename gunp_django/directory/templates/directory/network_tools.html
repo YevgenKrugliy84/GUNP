@@ -85,32 +85,49 @@
         const progressBar = document.getElementById('progressBar');
         resultsDiv.style.display = 'none';
         progressDiv.style.display = 'block';
-        progressBar.style.width = '0%';
-        progressBar.textContent = 'Підготовка тесту...';
+        progressBar.style.width = '10%';
+        progressBar.textContent = 'Запуск тесту...';
         this.disabled = true;
 
-        fetch('{% url "directory:speedtest" %}')
+        const poll = (jobId) => {
+            fetch(`{% url "directory:speedtest_status" job_id=0 %}`.replace('0', jobId))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'running') {
+                        progressBar.style.width = '60%';
+                        progressBar.textContent = 'Виконується...';
+                        setTimeout(() => poll(jobId), 1500);
+                        return;
+                    }
+                    if (data.status === 'error') {
+                        throw new Error(data.error || 'Помилка тесту');
+                    }
+                    document.getElementById('downloadSpeed').textContent = data.download;
+                    document.getElementById('uploadSpeed').textContent = data.upload;
+                    document.getElementById('pingResult').textContent = data.ping;
+                    document.getElementById('serverInfo').textContent = `Сервер: ${data.server}`;
+                    resultsDiv.style.display = 'block';
+                    progressDiv.style.display = 'none';
+                    document.getElementById('runSpeedTest').disabled = false;
+                })
+                .catch(error => {
+                    progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+                    progressBar.classList.add('bg-danger');
+                    progressBar.textContent = `Помилка: ${error.message}`;
+                    document.getElementById('runSpeedTest').disabled = false;
+                });
+        };
+
+        fetch('{% url "directory:speedtest_start" %}', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': CSRF_TOKEN },
+        })
             .then(response => response.json())
-            .then(data => {
-                if (data.error) throw new Error(data.error);
-                document.getElementById('downloadSpeed').textContent = data.download;
-                document.getElementById('uploadSpeed').textContent = data.upload;
-                document.getElementById('pingResult').textContent = data.ping;
-                document.getElementById('serverInfo').textContent = `Сервер: ${data.server}`;
-                resultsDiv.style.display = 'block';
-                progressDiv.style.display = 'none';
-                document.getElementById('runSpeedTest').disabled = false;
-            })
+            .then(data => poll(data.job_id))
             .catch(error => {
-                progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
                 progressBar.classList.add('bg-danger');
                 progressBar.textContent = `Помилка: ${error.message}`;
                 document.getElementById('runSpeedTest').disabled = false;
-            });
-
-        [[20, 'Вибір сервера...'], [40, 'Тест завантаження...'], [70, 'Тест відвантаження...'], [90, 'Обробка результатів...']]
-            .forEach(([percent, message], index) => {
-                setTimeout(() => { progressBar.style.width = `${percent}%`; progressBar.textContent = message; }, (index + 1) * 2000);
             });
     });
 </script>

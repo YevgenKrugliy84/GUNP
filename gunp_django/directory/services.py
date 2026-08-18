@@ -2,10 +2,43 @@ import logging
 import os
 import re
 import subprocess
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 
 logger = logging.getLogger(__name__)
+
+
+def run_speedtest_job(job_id):
+    """Runs speedtest-cli in a background thread and stores the result on the
+    SpeedtestJob row, so the HTTP request that triggers it doesn't block for
+    the ~10-30s a speed test normally takes."""
+    from django.utils import timezone
+
+    from .models import SpeedtestJob
+
+    def _run():
+        import speedtest
+
+        job = SpeedtestJob.objects.get(pk=job_id)
+        try:
+            st = speedtest.Speedtest()
+            st.get_best_server()
+            download_speed = st.download() / 1_000_000
+            upload_speed = st.upload() / 1_000_000
+            job.download_mbps = round(download_speed, 2)
+            job.upload_mbps = round(upload_speed, 2)
+            job.ping_ms = round(st.results.ping, 2)
+            job.server_name = st.results.server['name']
+            job.status = SpeedtestJob.STATUS_DONE
+        except Exception as e:
+            logger.error('Speedtest job %s failed: %s', job_id, e)
+            job.status = SpeedtestJob.STATUS_ERROR
+            job.error_message = str(e)
+        job.finished_at = timezone.now()
+        job.save()
+
+    threading.Thread(target=_run, daemon=True).start()
 
 
 def check_ping(ip_address):

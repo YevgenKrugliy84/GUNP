@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from .models import Department, DownloadLog, KnowledgeBaseArticle, Record, SupportRequest
+from .models import Department, DownloadLog, KnowledgeBaseArticle, Record, SpeedtestJob, SupportRequest
 
 
 @admin.register(Department)
@@ -46,6 +46,18 @@ class KnowledgeBaseArticleAdmin(admin.ModelAdmin):
 @admin.register(DownloadLog)
 class DownloadLogAdmin(admin.ModelAdmin):
     list_display = ['user', 'filename', 'downloaded_at']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(SpeedtestJob)
+class SpeedtestJobAdmin(admin.ModelAdmin):
+    list_display = ['id', 'status', 'download_mbps', 'upload_mbps', 'ping_ms', 'server_name', 'created_at']
+    list_filter = ['status']
 
     def has_add_permission(self, request):
         return False
