@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'axes',
     'accounts',
     'directory',
     'chat',
@@ -95,7 +96,33 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# django-axes: lock out after 5 failed logins from the same
+# username+IP combination for 1 hour.
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']
+AXES_RESET_ON_SUCCESS = True
+
+# The app always runs behind the nginx vhost in deploy/nginx_gunp.conf.
+# Without this, every request looks like it comes from 127.0.0.1 (nginx
+# itself), and axes would lock out ALL users together as a single "IP"
+# after 5 failed logins from anyone. We use X-Real-IP rather than
+# X-Forwarded-For here: nginx's `proxy_set_header X-Real-IP $remote_addr`
+# always overwrites it with what nginx itself saw, so a client can't spoof
+# it — whereas X-Forwarded-For is normally appended to, so a client-supplied
+# value would otherwise need extra proxy-count/trusted-IP bookkeeping to
+# strip safely.
+AXES_IPWARE_META_PRECEDENCE_ORDER = ['HTTP_X_REAL_IP', 'REMOTE_ADDR']
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = 'gunp.urls'
 
