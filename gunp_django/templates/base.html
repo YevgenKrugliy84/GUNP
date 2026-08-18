@@ -139,7 +139,12 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'directory:ip_calculator' %}">IP Калькулятор</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'directory:network_tools' %}">Мережеві інструменти</a></li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Вийти</a></li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link p-0 border-0" style="text-decoration:none;">Вийти</button>
+                            </form>
+                        </li>
                         {% if user.is_admin %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Адмін-панель</a></li>
                         {% endif %}
