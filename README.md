@@ -16,12 +16,15 @@ pip install -r gunp_django/requirements.txt
 cd gunp_django
 python manage.py migrate
 python manage.py import_legacy_db      # переносить дані зі старої instance/gundatabase.db (безпечно, ідемпотентно)
-python manage.py create_default_admin  # створює admin/PowerEdge123, якщо ще не існує
+export GUNP_ADMIN_PASSWORD='свій-надійний-пароль'
+python manage.py create_default_admin  # створює admin/$GUNP_ADMIN_PASSWORD, якщо ще не існує
 python manage.py runserver 10.111.16.6:4040
 ```
 
 Сайт: http://10.111.16.6:4040/
-Адмінка: http://10.111.16.6:4040/admin/ — логін `admin`, пароль `PowerEdge123`.
+Адмінка: http://10.111.16.6:4040/admin/ — логін `admin`, пароль — той, що задали через `GUNP_ADMIN_PASSWORD`
+(якщо змінну не задати, команда згенерує випадковий пароль і виведе його одноразово в консоль —
+його ніде більше не зберігають, тож одразу занотуйте).
 
 **Обов'язково змініть пароль адміністратора після першого входу** (Адмінка → Users → admin →
 "This form does not allow raw password" → посилання "change password form").
@@ -30,7 +33,8 @@ python manage.py runserver 10.111.16.6:4040
 
 - `DJANGO_SECRET_KEY` — секретний ключ Django, обов'язково задати свій перед реальним запуском.
 - `DJANGO_DEBUG` — `True`/`False`.
-- `GUNP_ADMIN_PASSWORD` — пароль для `create_default_admin`, якщо облікового запису `admin` ще немає.
+- `GUNP_ADMIN_PASSWORD` — пароль для `create_default_admin`, якщо облікового запису `admin` ще немає
+  (не задано — команда згенерує й виведе випадковий пароль замість фіксованого дефолту).
 
 ## Структура
 
