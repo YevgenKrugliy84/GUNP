@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily backup of the GUNP SQLite database
+After=network.target
+
+[Service]
+Type=oneshot
+User=poweredge
+Group=poweredge
+ExecStart="/usr/bin/bash" "/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/deploy/backup_db.sh"

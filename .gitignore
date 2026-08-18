@@ -16,6 +16,7 @@ app.log
 gunp_django/db.sqlite3
 gunp_django/staticfiles/
 gunp_django/logs/
+gunp_django/backups/
 
 # Environment / secrets
 .env

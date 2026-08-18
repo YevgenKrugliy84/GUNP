@@ -8,6 +8,8 @@ DEPLOY_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 install -m 644 "$DEPLOY_DIR/gunp.service" /etc/systemd/system/gunp.service
 install -m 644 "$DEPLOY_DIR/nginx_gunp.conf" /etc/nginx/sites-available/gunp
 install -m 644 "$DEPLOY_DIR/logrotate_gunp" /etc/logrotate.d/gunp
+install -m 644 "$DEPLOY_DIR/backup-gunp-db.service" /etc/systemd/system/backup-gunp-db.service
+install -m 644 "$DEPLOY_DIR/backup-gunp-db.timer" /etc/systemd/system/backup-gunp-db.timer
 
 ln -sf /etc/nginx/sites-available/gunp /etc/nginx/sites-enabled/gunp
 
@@ -16,6 +18,7 @@ logrotate -d /etc/logrotate.d/gunp
 
 systemctl daemon-reload
 systemctl enable --now gunp
+systemctl enable --now backup-gunp-db.timer
 systemctl reload nginx
 
 echo "Done. gunp.service status:"
