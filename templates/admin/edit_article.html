@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Редагувати статтю</h1>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="title" class="form-label">Заголовок</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ article.title }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Категорія</label>
+            <input type="text" class="form-control" id="category" name="category" value="{{ article.category }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Вміст</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required>{{ article.content }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+        <a href="{{ url_for('admin.manage_knowledge_base') }}" class="btn btn-secondary">Скасувати</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+gunp_django_venv/
+venv/
+.venv/
+
+# Legacy Flask runtime data
+instance/
+app.log
+
+# Django project runtime data
+gunp_django/db.sqlite3
+gunp_django/staticfiles/
+
+# Environment / secrets
+.env
+*.env
+!.env.example
+
+# Editor/OS
+.idea/
+.vscode/
+.DS_Store

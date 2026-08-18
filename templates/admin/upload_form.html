@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Завантажити форму заявки</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Виберіть файл (.doc)</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".doc" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Завантажити</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Адмін-панель</h1>
+
+    <!-- Statistics Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Статистика</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Загальна кількість записів</h5>
+                            <p class="display-4 text-primary" id="totalRecords">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Загальна кількість заявок</h5>
+                            <p class="display-4 text-success" id="totalSupportRequests">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Нові заявки</h5>
+                            <p class="display-4 text-danger" id="newRequests">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <canvas id="requestsChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Existing Dashboard Content -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Підрозділи</h5>
+                    <p class="card-text">Кількість: {{ department_count }}</p>
+                    <a href="{{ url_for('admin.manage_departments') }}" class="btn btn-primary">Переглянути</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Записи</h5>
+                    <p class="card-text">Кількість: {{ record_count }}</p>
+                    <a href="{{ url_for('admin.manage_records') }}" class="btn btn-primary">Переглянути</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Заявки на підтримку</h5>
+                    <p class="card-text">Кількість: {{ support_request_count }}</p>
+                    <a href="{{ url_for('admin.manage_support_requests') }}" class="btn btn-primary">Переглянути</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Statuses -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Статуси підрозділів</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Підрозділ</th>
+                        <th>IP-адреса</th>
+                        <th>Статус</th>
+                        <th>Латентність</th>
+                        <th>Останній чек</th>
+                    </tr>
+                </thead>
+                <tbody id="statusTable">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fetch statistics
+    fetch('{{ url_for("admin.get_statistics") }}')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalRecords').textContent = data.total_records;
+            document.getElementById('totalSupportRequests').textContent = data.total_support_requests;
+            document.getElementById('newRequests').textContent = data.new_requests;
+
+            // Initialize Chart
+            const ctx = document.getElementById('requestsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Нові', 'В процесі', 'Виконані'],
+                    datasets: [{
+                        label: 'Заявки на підтримку',
+                        data: [data.new_requests, data.in_progress_requests, data.resolved_requests],
+                        backgroundColor: ['#dc3545', '#ffc107', '#28a745'],
+                        borderColor: ['#dc3545', '#ffc107', '#28a745'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Кількість заявок'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+
+    // Fetch department statuses
+    function updateStatuses() {
+        fetch('{{ url_for("admin.get_department_statuses") }}')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('statusTable');
+                tbody.innerHTML = '';
+                data.forEach(dept => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${dept.name}</td>
+                        <td>${dept.ip_address}</td>
+                        <td><span class="badge" style="background-color: ${dept.color}">${dept.status}</span></td>
+                        <td>${dept.latency ? dept.latency.toFixed(2) + ' ms' : '-'}</td>
+                        <td>${dept.last_checked || '-'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+    }
+
+    updateStatuses();
+    setInterval(updateStatuses, 30000);
+</script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Управління підрозділами</h2>
+    <a href="{{ url_for('admin.add_department') }}" class="btn btn-primary mb-3">Додати підрозділ</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Назва</th>
+                <th>IP-адреса</th>
+                <th>Статус</th>
+                <th>Затримка (мс)</th>
+                <th>Останнє оновлення</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody id="department-table">
+            {% for department in departments %}
+            <tr data-dept-id="{{ department.id }}">
+                <td>{{ department.name }}</td>
+                <td>{{ department.ip_address or '-' }}</td>
+                <td>
+                    <span class="status-badge" style="color: {{ 'green' if department.last_status else 'red' }}">
+                        {{ 'Онлайн' if department.last_status else 'Офлайн' }}
+                    </span>
+                </td>
+                <td>{{ department.last_latency|round(2) if department.last_latency else '-' }}</td>
+                <td>{{ department.last_checked.strftime('%Y-%m-%d %H:%M:%S') if department.last_checked else '-' }}</td>
+                <td>
+                    <a href="{{ url_for('admin.edit_department', dept_id=department.id) }}" class="btn btn-sm btn-warning">Редагувати</a>
+                    <form action="{{ url_for('admin.delete_department', dept_id=department.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Ви впевнені, що хочете видалити цей підрозділ?')">Видалити</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateStatuses() {
+        fetch('{{ url_for("admin.get_department_statuses") }}')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(dept => {
+                    const row = document.querySelector(`tr[data-dept-id="${dept.id}"]`);
+                    if (row) {
+                        const statusCell = row.cells[2].querySelector('.status-badge');
+                        const latencyCell = row.cells[3];
+                        const checkedCell = row.cells[4];
+                        statusCell.textContent = dept.status === 'online' ? 'Онлайн' : 'Офлайн';
+                        statusCell.style.color = dept.color;
+                        latencyCell.textContent = dept.latency ? dept.latency.toFixed(2) : '-';
+                        checkedCell.textContent = dept.last_checked || '-';
+                    }
+                });
+            })
+            .catch(error => console.error('Error updating statuses:', error));
+    }
+
+    // Оновлювати статуси кожні 30 секунд
+    updateStatuses();
+    setInterval(updateStatuses, 30000);
+});
+</script>
+{% endblock %}

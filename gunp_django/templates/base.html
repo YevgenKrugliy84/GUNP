@@ -1,0 +1,314 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}УПРАВЛІННЯ ІНФОРМАЦІЙНОЇ АНАЛІТИЧНОЇ ПІДТРИМКИ ГУНП у м. Києві{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        html, body { height: 100vh; margin: 0; padding: 0; overflow-y: auto; background-color: #0057b7; font-family: 'Ubuntu', sans-serif; }
+        .header { background-color: #0057b7; color: #ffd700; padding: 10px 0; position: relative; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+        .logo-container { margin-right: 20px; }
+        .logo { height: 80px; }
+        h1 { font-size: 1.8rem; font-weight: 700; margin: 0; text-align: center; }
+        .navbar { background-color: #0057b7; margin-bottom: 20px; }
+        .navbar-nav .nav-link { color: white !important; font-weight: 500; margin: 0 10px; }
+        .navbar-nav .nav-link:hover { color: #ffd700 !important; }
+        footer { background-color: #0057b7; color: white; text-align: center; padding: 10px 0; width: 100%; }
+        .footer-flag { margin-top: 10px; }
+        .flag-stripe { height: 5px; width: 100%; }
+        .blue { background-color: #0057b7; }
+        .yellow { background-color: #ffd700; }
+        .chat-icon { position: fixed; bottom: 20px; left: 20px; z-index: 1000; }
+        .chat-icon button { width: 60px; height: 60px; font-size: 24px; background-color: #0057b7; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .chat-icon button:hover { background-color: #ffd700; color: #0057b7; }
+        .chat-popup { position: fixed; bottom: 90px; left: 20px; width: 350px; display: none; z-index: 1000; background-color: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); flex-direction: column; }
+        .chat-header { background-color: #0057b7; color: white; padding: 10px; border-radius: 8px 8px 0 0; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
+        .chat-tabs { padding: 10px; background-color: #f1f1f1; flex-shrink: 0; display: flex; gap: 5px; }
+        .chat-tabs button { flex: 1; font-size: 14px; padding: 8px; border-radius: 5px; background-color: #e9ecef; border: none; }
+        .chat-tabs button.active { background-color: #0057b7; color: white; }
+        .chat-body { height: 400px; overflow-y: auto; padding: 10px; transition: background-color 0.3s; }
+        .chat-body.public { background-color: #e6f0fa; }
+        .chat-body.private { background-color: #e6ffe6; }
+        .chat-body.stats { background-color: #fffde7; }
+        .chat-message { margin-bottom: 10px; padding: 8px 12px; border-radius: 5px; max-width: 80%; word-wrap: break-word; }
+        .chat-message.sent { margin-left: auto; background-color: #0057b7; color: white; }
+        .chat-message.received { margin-right: auto; background-color: #e9ecef; color: #333; }
+        .chat-message.admin { margin-left: auto; background-color: #28a745; color: white; }
+        .chat-footer { padding: 10px; border-top: 1px solid #ccc; flex-shrink: 0; background-color: #fff; }
+        .chat-footer textarea { resize: none; }
+        .chat-footer button { background-color: #0057b7; border: none; }
+        .chat-footer button:hover { background-color: #ffd700; color: #0057b7; }
+        .chatbot-container { position: fixed; bottom: 20px; right: 20px; z-index: 50; width: 350px; }
+        #chatbot-toggle { width: 100%; padding: 10px; font-weight: bold; background-color: #0057b7; border: none; }
+        #chatbot-toggle:hover { background-color: #ffd700; color: #0057b7; }
+        #chatbot-window { box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+        .chatbot-message { margin-bottom: 0.5rem; }
+        .user-message { text-align: right; color: #0057b7; }
+        .bot-message { text-align: left; color: #333; }
+        .chatbot-buttons { margin-top: 0.5rem; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="{% static 'logo_ukr.png' %}" alt="Лого УІАП" class="logo">
+            </div>
+            <h1>УПРАВЛІННЯ ІНФОРМАЦІЙНОЇ АНАЛІТИЧНОЇ ПІДТРИМКИ<br>ГУНП у м. Києві</h1>
+        </div>
+    </header>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'directory:index' %}">Головна</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'directory:search' %}">Пошук</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'directory:about' %}">Про нас</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'directory:tech_support' %}">Технічна підтримка</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'directory:resources' %}">Ресурси</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'directory:ip_calculator' %}">IP Калькулятор</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'directory:network_tools' %}">Мережеві інструменти</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Вийти</a></li>
+                        {% if user.is_admin %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Адмін-панель</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">Вхід</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:register' %}">Реєстрація</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Адмін-панель</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% if messages %}
+            <div class="mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 УІАП ГУНП у м. Києві. Всі права захищені.</p>
+            <div class="footer-flag">
+                <div class="flag-stripe blue"></div>
+                <div class="flag-stripe yellow"></div>
+            </div>
+        </div>
+    </footer>
+
+    {% if user.is_authenticated %}
+    <div class="chat-icon">
+        <button class="btn btn-primary rounded-circle" onclick="toggleOnlineChat()"><i class="fas fa-comment"></i></button>
+    </div>
+    <div class="chat-popup" id="onlineChatPopup">
+        <div class="chat-header">
+            <h5>Онлайн чат</h5>
+            <button type="button" class="btn-close btn-close-white" onclick="toggleOnlineChat()"></button>
+        </div>
+        <div class="chat-tabs">
+            <button onclick="switchChat('public')" class="btn active">Загальний чат</button>
+            <button onclick="switchChat('private')" class="btn">Чат з адміністратором</button>
+        </div>
+        <div class="chat-body public" id="onlineChatBody"></div>
+        <div class="chat-footer">
+            <form id="onlineChatForm">
+                <textarea class="form-control mb-2" id="onlineChatMessage" rows="2" placeholder="Введіть повідомлення" required></textarea>
+                <button type="submit" class="btn btn-primary w-100">Надіслати</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="chatbot-container">
+        <button id="chatbot-toggle" class="btn btn-primary">Техпідтримка 💬</button>
+        <div id="chatbot-window" class="card" style="display: none;">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Чат-бот техпідтримки ГУНП</h5>
+                <button id="chatbot-close" class="btn-close btn-close-white" aria-label="Close"></button>
+            </div>
+            <div id="chatbot-messages" class="card-body" style="height: 300px; overflow-y: auto; background-color: #f8f9fa;"></div>
+            <div class="card-footer">
+                <form id="chatbot-form" class="input-group">
+                    <input type="text" id="chatbot-input" class="form-control" placeholder="Ваше повідомлення..." autocomplete="off">
+                    <button type="submit" id="chatbot-send" class="btn btn-primary">Надіслати</button>
+                </form>
+                <div class="chatbot-buttons mt-2 text-center">
+                    <button type="button" class="btn btn-sm btn-info me-2" onclick="getMyIP()">Дізнатись мою IP</button>
+                    <button type="button" class="btn btn-sm btn-info me-2" onclick="askAboutMAC()">Де знайти MAC?</button>
+                    <button type="button" class="btn btn-sm btn-warning me-2" onclick="commonIssues()">Поширені проблеми</button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="sendChatbotMessage('Показати не опрацьовані заявки')">Неопрацьовані заявки</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% csrf_token %}
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        const CSRF_TOKEN = getCookie('csrftoken');
+
+        {% if user.is_authenticated %}
+        let currentChatType = 'public';
+        let lastMessageId = 0;
+        let pollTimer = null;
+
+        function toggleOnlineChat() {
+            const chatPopup = document.getElementById('onlineChatPopup');
+            const opening = chatPopup.style.display !== 'block';
+            chatPopup.style.display = opening ? 'block' : 'none';
+            if (opening) {
+                loadOnlineChatMessages(currentChatType, true);
+                if (!pollTimer) pollTimer = setInterval(() => loadOnlineChatMessages(currentChatType, false), 3000);
+            } else if (pollTimer) {
+                clearInterval(pollTimer);
+                pollTimer = null;
+            }
+        }
+
+        function switchChat(type) {
+            currentChatType = type;
+            lastMessageId = 0;
+            const chatBody = document.getElementById('onlineChatBody');
+            chatBody.className = 'chat-body ' + type;
+            chatBody.innerHTML = '';
+            document.querySelectorAll('.chat-tabs button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.chat-tabs button[onclick="switchChat('${type}')"]`).classList.add('active');
+            loadOnlineChatMessages(type, true);
+        }
+
+        function loadOnlineChatMessages(type, replace) {
+            const since = replace ? 0 : lastMessageId;
+            fetch(`{% url 'chat:messages' %}?type=${type}&since=${since}`)
+                .then(r => r.json())
+                .then(data => {
+                    const chatBody = document.getElementById('onlineChatBody');
+                    if (replace) chatBody.innerHTML = '';
+                    data.messages.forEach(msg => {
+                        const div = document.createElement('div');
+                        div.className = `chat-message ${msg.is_admin ? 'admin' : (msg.is_mine ? 'sent' : 'received')}`;
+                        div.innerHTML = `<strong>${msg.sender_name}</strong> (${new Date(msg.created_at).toLocaleString('uk-UA')}): ${msg.message}`;
+                        chatBody.appendChild(div);
+                        lastMessageId = Math.max(lastMessageId, msg.id);
+                    });
+                    if (data.messages.length) chatBody.scrollTop = chatBody.scrollHeight;
+                })
+                .catch(err => console.error('Error loading chat messages:', err));
+        }
+
+        document.getElementById('onlineChatForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const textarea = document.getElementById('onlineChatMessage');
+            const message = textarea.value.trim();
+            if (!message) return;
+            fetch('{% url "chat:send" %}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+                body: JSON.stringify({ chat_type: currentChatType, message: message }),
+            })
+                .then(r => r.json())
+                .then(() => { textarea.value = ''; loadOnlineChatMessages(currentChatType, false); })
+                .catch(err => console.error('Error sending message:', err));
+        });
+        {% endif %}
+
+        $(document).ready(function () {
+            $('#chatbot-toggle, #chatbot-close').click(function () {
+                $('#chatbot-window').slideToggle(function () {
+                    if ($('#chatbot-window').is(':visible') && !$('#chatbot-messages').children().length) {
+                        setTimeout(() => addMessage('bot', 'Вітаю! Я чат-бот техпідтримки ГУНП. Чим можу допомогти?'), 300);
+                    }
+                });
+            });
+            $('#chatbot-form').submit(function (e) {
+                e.preventDefault();
+                const message = $('#chatbot-input').val().trim();
+                if (message) {
+                    addMessage('user', message);
+                    sendChatbotMessage(message);
+                    $('#chatbot-input').val('');
+                }
+            });
+        });
+
+        function addMessage(sender, text) {
+            const messagesDiv = $('#chatbot-messages');
+            const msgElement = $('<div>').addClass('chatbot-message mb-2 ' + (sender === 'user' ? 'user-message' : 'bot-message'));
+            msgElement.html(`<strong>${sender === 'user' ? 'Ви' : 'Бот'}:</strong> ${text}`);
+            messagesDiv.append(msgElement);
+            messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
+        }
+
+        function sendChatbotMessage(message) {
+            $.ajax({
+                url: '{% url "directory:chatbot" %}',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: { 'X-CSRFToken': CSRF_TOKEN },
+                data: JSON.stringify({ message: message }),
+                success: function (data) { addMessage('bot', data.response); },
+                error: function () { addMessage('bot', 'Виникла помилка. Спробуйте ще раз.'); }
+            });
+        }
+
+        function getMyIP() {
+            $.ajax({
+                url: '{% url "directory:get_my_ip" %}',
+                type: 'GET',
+                success: function (data) { addMessage('bot', `Ваша IP-адреса: ${data.ip}.`); },
+                error: function () { addMessage('bot', 'Не вдалося визначити IP.'); }
+            });
+        }
+
+        function askAboutMAC() {
+            const response = `MAC-адресу можна знайти:
+            <ol>
+                <li>У Windows: cmd → <code>ipconfig /all</code></li>
+                <li>У macOS/Linux: термінал → <code>ifconfig</code></li>
+                <li>На наклейці пристрою або в налаштуваннях мережі</li>
+            </ol>`;
+            addMessage('bot', response);
+        }
+
+        function commonIssues() {
+            const response = `Ось рішення для поширених проблем:
+            <ul>
+                <li><strong>Немає інтернету:</strong> перевірте кабель, перезавантажте роутер</li>
+                <li><strong>Не відкривається сайт:</strong> перевірте IP та мережу</li>
+                <li><strong>Проблеми з принтером:</strong> перевірте драйвери</li>
+            </ul>`;
+            addMessage('bot', response);
+        }
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

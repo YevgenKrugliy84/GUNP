@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ip-calculator-container">
+    <h1>IP Калькулятор</h1>
+    <div class="calculator-form">
+        <div class="input-group">
+            <input type="text" id="ip-address" placeholder="Наприклад: 192.168.1.1/24">
+            <button onclick="calculateIP()">Розрахувати</button>
+        </div>
+        <div id="ip-error" class="error-message"></div>
+    </div>
+    <div id="ip-result" class="result-container">
+        <div class="result-placeholder"><p>Тут будуть результати розрахунків</p></div>
+    </div>
+</div>
+<style>
+    footer { position: fixed; bottom: 0; width: 100%; background-color: #0057b7; color: white; padding: 10px; }
+</style>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    function calculateIP() {
+        const input = document.getElementById('ip-address').value.trim();
+        const resultDiv = document.getElementById('ip-result');
+        const errorDiv = document.getElementById('ip-error');
+        resultDiv.innerHTML = '';
+        errorDiv.textContent = '';
+        if (!input) { errorDiv.textContent = 'Будь ласка, введіть IP-адресу та маску'; return; }
+        try {
+            const parts = input.split('/');
+            if (parts.length !== 2) throw new Error('Невірний формат. Використовуйте формат XXX.XXX.XXX.XXX/YY');
+            const [ip, maskBitsStr] = parts;
+            const ipParts = ip.split('.').map(Number);
+            const maskBits = parseInt(maskBitsStr, 10);
+            if (ipParts.length !== 4 || ipParts.some(isNaN) || ipParts.some(part => part < 0 || part > 255)) {
+                throw new Error('Невірний формат IP. Кожен октет 0-255');
+            }
+            if (isNaN(maskBits) || maskBits < 0 || maskBits > 32) throw new Error('Маска повинна бути числом 0-32');
+            const netmask = [];
+            let remainingBits = maskBits;
+            for (let i = 0; i < 4; i++) {
+                const bits = Math.min(8, remainingBits);
+                netmask.push(bits ? 256 - Math.pow(2, 8 - bits) : 0);
+                remainingBits -= bits;
+            }
+            const network = ipParts.map((part, i) => part & netmask[i]);
+            const broadcast = network.map((part, i) => part | (255 ^ netmask[i]));
+            let hosts;
+            if (maskBits <= 30) hosts = Math.pow(2, 32 - maskBits) - 2;
+            else if (maskBits === 31) hosts = 2;
+            else hosts = 1;
+            let range = '';
+            if (maskBits <= 30) {
+                const start = [...network]; start[3] += 1;
+                const end = [...broadcast]; end[3] -= 1;
+                range = `${start.join('.')} - ${end.join('.')}`;
+            }
+            resultDiv.innerHTML = `
+                <div class="result-item"><strong>Введена адреса:</strong> ${ipParts.join('.')}/${maskBits}</div>
+                <div class="result-item"><strong>Маска підмережі:</strong> ${netmask.join('.')} (/${maskBits})</div>
+                <div class="result-item"><strong>Адреса мережі:</strong> ${network.join('.')}</div>
+                <div class="result-item"><strong>Broadcast:</strong> ${broadcast.join('.')}</div>
+                <div class="result-item"><strong>Доступні адреси:</strong> ${hosts}</div>
+                ${range ? `<div class="result-item"><strong>Діапазон:</strong> ${range}</div>` : ''}
+                <div class="result-item"><strong>Клас мережі:</strong> ${getNetworkClass(ipParts)}</div>
+                <div class="result-item"><strong>Тип адреси:</strong> ${getAddressType(ipParts)}</div>
+            `;
+        } catch (e) {
+            errorDiv.textContent = 'Помилка: ' + e.message;
+        }
+    }
+    function getNetworkClass(ipParts) {
+        const firstOctet = ipParts[0];
+        if (firstOctet < 128) return 'A';
+        if (firstOctet < 192) return 'B';
+        if (firstOctet < 224) return 'C';
+        if (firstOctet < 240) return 'D (multicast)';
+        return 'E (reserved)';
+    }
+    function getAddressType(ipParts) {
+        if (ipParts[0] === 127) return 'Loopback';
+        if (ipParts[0] === 10) return 'Приватна (RFC 1918)';
+        if (ipParts[0] === 172 && ipParts[1] >= 16 && ipParts[1] <= 31) return 'Приватна';
+        if (ipParts[0] === 192 && ipParts[1] === 168) return 'Приватна';
+        if (ipParts[0] === 169 && ipParts[1] === 254) return 'APIPA';
+        if (ipParts[0] >= 224 && ipParts[0] <= 239) return 'Multicast';
+        if (ipParts.every(octet => octet === 255)) return 'Broadcast';
+        return 'Публічна';
+    }
+</script>
+{% endblock %}

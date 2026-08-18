@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Ресурси </h1>
+
+    <!-- Кнопка для завантаження документа -->
+    <div class="mb-4">
+        <h3>Заявка на підключення до мережі Інтернет</h3>
+        <a href="{{ url_for('download_form') }}" class="btn btn-primary">Завантажити форму (Word)</a>
+    </div>
+
+    {% endblock %}

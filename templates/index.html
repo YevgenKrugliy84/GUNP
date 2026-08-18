@@ -1,14 +1,52 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block title %}Головна - УІАП ГУНП у м. Києві{% endblock %}
 
 {% block content %}
-<div class="departments-list">
-    <h2>Підрозділи</h2>
-    <div class="grid">
-        {% for department in departments %}
-        <a href="{{ url_for('show_department', dept_id=department.id) }}" class="department-card">
-            {{ department.name }}
-        </a>
-        {% endfor %}
+<div class="container mt-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="departments-list">
+        <h2>Підрозділи</h2>
+        {% if departments %}
+            <div class="grid">
+                {% for department in departments %}
+                {% set latest_request = department.support_requests | sort(attribute='created_at', reverse=True) | first if department.support_requests else None %}
+                <div class="department-card {{ 'online' if department.last_status else 'offline' }}" data-dept-id="{{ department.id }}">
+                    <a href="{{ url_for('add_record_public', dept_id=department.id) }}" class="department-name">
+                        {{ department.name }}
+                    </a>
+                    <div class="status-info">
+                        <span class="status-indicator">
+                            {{ 'Онлайн' if department.last_status else 'Офлайн' }}
+                        </span>
+                        {% if latest_request %}
+                            <a href="{{ url_for('check_support_request') }}" class="status-eye" title="Переглянути заявку">
+                                <i class="fas fa-eye" style="color: {{ '#28a745' if latest_request.status == 'resolved' else '#dc3545' }}"></i>
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('check_support_request') }}" class="status-eye" title="Переглянути заявку">
+                                <i class="fas fa-eye" style="color: #6c757d"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                Немає доступних підрозділів. Зверніться до адміністратора.
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

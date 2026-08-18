@@ -1,0 +1,118 @@
+```html
+{% extends "base.html" %}
+{% block title %}Приватний чат{% endblock %}
+{% block content %}
+<h2>Приватний чат</h2>
+{% if unread_count > 0 %}
+<p>Непрочитаних повідомлень: <span class="badge bg-danger">{{ unread_count }}</span></p>
+{% endif %}
+<div class="row">
+    <div class="col-md-4">
+        <h4>Користувачі</h4>
+        <ul class="list-group" id="conversation-list">
+            {% for conv in conversations %}
+            <li class="list-group-item {% if conv.has_unread %}list-group-item-warning{% endif %}" data-user-id="{{ conv.user_id }}">
+                <a href="#{{ conv.user_id }}" onclick="loadConversation('{{ conv.user_id }}')">
+                    {{ conv.sender_name }} ({{ conv.department }})
+                    {% if conv.has_unread %}
+                    <span class="badge bg-danger">Нове</span>
+                    {% endif %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-8">
+        <h4>Повідомлення</h4>
+        <div id="chat-messages" style="height: 400px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
+            <!-- Messages will be loaded here via JavaScript -->
+        </div>
+        <form method="POST" id="chat-form">
+            <input type="hidden" name="user_id" id="user_id" value="">
+            <div class="mb-3">
+                <textarea name="message" class="form-control" placeholder="Введіть повідомлення" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Надіслати</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const socket = io();
+    socket.on('connect', () => {
+        socket.emit('join', { room: 'private_admin' });
+        {% if current_user.is_authenticated %}
+        socket.emit('join', { room: 'admin_{{ current_user.id }}' });
+        {% endif %}
+    });
+
+    socket.on('receive_message', (data) => {
+        if (data.type === 'private') {
+            // Update conversation list
+            const convList = document.getElementById('conversation-list');
+            let convItem = document.querySelector(`.list-group-item[data-user-id="${data.guestId}"]`);
+            if (!convItem) {
+                convItem = document.createElement('li');
+                convItem.className = 'list-group-item list-group-item-warning';
+                convItem.dataset.userId = data.guestId;
+                convItem.innerHTML = `
+                    <a href="#${data.guestId}" onclick="loadConversation('${data.guestId}')">
+                        ${data.sender_name} (Невідомий)
+                        <span class="badge bg-danger">Нове</span>
+                    </a>
+                `;
+                convList.appendChild(convItem);
+            } else if (!convItem.classList.contains('list-group-item-warning')) {
+                convItem.classList.add('list-group-item-warning');
+                const badge = convItem.querySelector('.badge');
+                if (!badge) {
+                    const newBadge = document.createElement('span');
+                    newBadge.className = 'badge bg-danger';
+                    newBadge.textContent = 'Нове';
+                    convItem.querySelector('a').appendChild(newBadge);
+                }
+            }
+            // Update messages if the conversation is selected
+            if (data.guestId === document.getElementById('user_id').value) {
+                const messagesDiv = document.getElementById('chat-messages');
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${data.sender_name}</strong> (${data.created_at}): ${data.message}`;
+                messagesDiv.appendChild(p);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+            // Update unread count
+            fetch('/admin/unread-messages-count')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.querySelector('.badge.bg-danger');
+                    if (badge) {
+                        badge.textContent = data.unread_count;
+                    }
+                });
+        }
+    });
+
+    function loadConversation(userId) {
+        document.getElementById('user_id').value = userId;
+        const messagesDiv = document.getElementById('chat-messages');
+        messagesDiv.innerHTML = '';
+        {% for conv in conversations %}
+        if ('{{ conv.user_id }}' === userId) {
+            {% for msg in conv.messages %}
+            const p = document.createElement('p');
+            p.innerHTML = `<strong>{{ msg.sender_name }}</strong> ({{ msg.created_at }}): {{ msg.message | safe }}`;
+            messagesDiv.appendChild(p);
+            {% endfor %}
+        }
+        {% endfor %}
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        // Remove unread badge
+        const convItem = document.querySelector(`.list-group-item[data-user-id="${userId}"]`);
+        if (convItem) {
+            convItem.classList.remove('list-group-item-warning');
+            const badge = convItem.querySelector('.badge');
+            if (badge) badge.remove();
+        }
+    }
+</script>
+{% endblock %}

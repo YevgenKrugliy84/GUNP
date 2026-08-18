@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Перевірка статусу заявки</h1>
+
+    <div class="support-container">
+        <form method="POST" action="{% url 'directory:check_support_request' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="request_id">Номер заявки:</label>
+                <input type="text" id="request_id" name="request_id" value="{{ request_id|default:'' }}" required class="form-control" placeholder="Введіть номер заявки (наприклад, 123)">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Перевірити</button>
+        </form>
+
+        {% if support_request %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Заявка #{{ support_request.id }}</h5>
+                    <p><strong>ПІБ:</strong> {{ support_request.name }}</p>
+                    <p><strong>Підрозділ:</strong> {{ support_request.department.name|default:'Не вказано' }}</p>
+                    <p><strong>Email:</strong> {{ support_request.email }}</p>
+                    <p><strong>Тип проблеми:</strong> {{ support_request.issue_type }}</p>
+                    <p><strong>Опис:</strong> {{ support_request.description }}</p>
+                    <p><strong>Терміновість:</strong> {{ support_request.urgency }}</p>
+                    <p><strong>Статус:</strong>
+                        <span class="badge
+                            {% if support_request.status == 'new' %}bg-primary
+                            {% elif support_request.status == 'in_progress' %}bg-warning
+                            {% elif support_request.status == 'resolved' %}bg-success
+                            {% else %}bg-secondary{% endif %}">
+                            {{ support_request.get_status_display }}
+                        </span>
+                    </p>
+                    <p><strong>Відповідь адміністратора:</strong> {{ support_request.admin_response|default:'Відповідь відсутня' }}</p>
+                    <p><strong>Дата створення:</strong> {{ support_request.created_at|date:'d.m.Y H:i' }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

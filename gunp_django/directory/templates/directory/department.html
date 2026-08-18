@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="department-container mt-5">
+    <h2>Записи для підрозділу: {{ department.name }}</h2>
+
+    {% if user.is_staff %}
+    <div class="action-buttons mb-3">
+        <a href="{% url 'admin:directory_record_add' %}" class="btn btn-primary add-btn">Додати запис (адмінка)</a>
+    </div>
+    {% endif %}
+
+    {% if records %}
+        <table class="table table-striped records-table">
+            <thead>
+                <tr>
+                    <th>ПІБ</th>
+                    <th>IP-адреса</th>
+                    <th>MAC-адреса</th>
+                    <th>Служба</th>
+                    <th>Кабінет</th>
+                    <th>Робочий телефон</th>
+                    <th>Мобільний телефон</th>
+                    {% if user.is_staff %}<th>Дії</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                    <tr>
+                        <td>{{ record.full_name }}</td>
+                        <td>{{ record.ip_address|default:'-' }}</td>
+                        <td>{{ record.mac_address|default:'-' }}</td>
+                        <td>{{ record.service|default:'-' }}</td>
+                        <td>{{ record.office|default:'-' }}</td>
+                        <td>{{ record.work_phone|default:'-' }}</td>
+                        <td>{{ record.mobile_phone|default:'-' }}</td>
+                        {% if user.is_staff %}
+                        <td>
+                            <a href="{% url 'admin:directory_record_change' record.id %}" class="btn btn-sm btn-primary">Редагувати</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Записи для цього підрозділу відсутні.</p>
+    {% endif %}
+
+    <a href="{% url 'directory:index' %}" class="btn btn-secondary mt-3">Повернутися до списку підрозділів</a>
+</div>
+{% endblock %}

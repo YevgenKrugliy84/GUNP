@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Додати новий запис для {{ department.name }}</h2>
+
+    <div class="form-container">
+        <form method="POST" action="{% url 'directory:add_record_public' dept_id=dept_id %}" id="add-record-form">
+            {% csrf_token %}
+            <input type="hidden" name="department" value="{{ department.id }}">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Прізвище*</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ім'я*</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">По батькові</label>
+                    {{ form.middle_name }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">IP-адреса*</label>
+                    {{ form.ip_address }}
+                    {% for error in form.ip_address.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">MAC-адреса*</label>
+                    {{ form.mac_address }}
+                    {% for error in form.mac_address.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Служба/підрозділ*</label>
+                    {{ form.service }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Кабінет*</label>
+                    {{ form.office }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Робочий телефон</label>
+                    {{ form.work_phone }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Мобільний телефон</label>
+                    {{ form.mobile_phone }}
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'directory:index' %}" class="btn btn-secondary me-md-2">Назад</a>
+                <button type="submit" class="btn btn-primary submit-btn">Зберегти</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

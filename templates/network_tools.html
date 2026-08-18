@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="network-tools-container">
+    <h1 class="mb-4">Мережеві інструменти</h1>
+
+    <!-- Діагностика мережі -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Діагностика мережі</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group mb-3">
+                    <label for="target" class="form-label">IP або домен:</label>
+                    <input type="text" class="form-control" id="target" name="target"
+                           placeholder="Наприклад: 192.168.1.1 або google.com" required>
+                </div>
+
+                <div class="btn-group" role="group">
+                    <button type="submit" name="ping" class="btn btn-success">
+                        <i class="fas fa-network-wired"></i> Ping
+                    </button>
+                    <button type="submit" name="traceroute" class="btn btn-info">
+                        <i class="fas fa-route"></i> Traceroute
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if ping_result %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h3 class="mb-0">Результат Ping</h3>
+        </div>
+        <div class="card-body">
+            <pre class="bg-dark text-white p-3 rounded">{{ ping_result }}</pre>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if traceroute_result %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h3 class="mb-0">Результат Traceroute</h3>
+        </div>
+        <div class="card-body">
+            <pre class="bg-dark text-white p-3 rounded">{{ traceroute_result }}</pre>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Тест швидкості інтернету -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Тест швидкості інтернету</h3>
+        </div>
+        <div class="card-body">
+            <button id="runSpeedTest" class="btn btn-success">
+                <i class="fas fa-tachometer-alt"></i> Запустити тест
+            </button>
+            <div id="speedtestResults" class="mt-3" style="display: none;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Завантаження</h5>
+                                <p class="display-4 text-primary" id="downloadSpeed">0</p>
+                                <p class="card-text">Мбіт/с</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Відвантаження</h5>
+                                <p class="display-4 text-success" id="uploadSpeed">0</p>
+                                <p class="card-text">Мбіт/с</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Ping</h5>
+                                <p class="display-4 text-info" id="pingResult">0</p>
+                                <p class="card-text">мс</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted mt-2" id="serverInfo"></p>
+            </div>
+            <div id="speedtestProgress" class="progress mt-3" style="display: none; height: 20px;">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                     role="progressbar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- СТИЛІ -->
+<style>
+    .network-tools-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    .btn-group .btn {
+        margin-right: 10px;
+    }
+    .card {
+        margin-bottom: 20px;
+        border-radius: 10px;
+    }
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+    }
+    .display-4 {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+</style>
+
+<!-- СКРИПТ -->
+<script>
+    document.getElementById('runSpeedTest').addEventListener('click', function() {
+        const resultsDiv = document.getElementById('speedtestResults');
+        const progressDiv = document.getElementById('speedtestProgress');
+        const progressBar = document.getElementById('progressBar');
+
+        resultsDiv.style.display = 'none';
+        progressDiv.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressBar.textContent = 'Підготовка тесту...';
+
+        this.disabled = true;
+
+        const updateProgress = (percent, message) => {
+            progressBar.style.width = `${percent}%`;
+            progressBar.textContent = message;
+        };
+
+        fetch('/speedtest')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                document.getElementById('downloadSpeed').textContent = data.download;
+                document.getElementById('uploadSpeed').textContent = data.upload;
+                document.getElementById('pingResult').textContent = data.ping;
+                document.getElementById('serverInfo').textContent = `Сервер: ${data.server}`;
+
+                resultsDiv.style.display = 'block';
+                progressDiv.style.display = 'none';
+                document.getElementById('runSpeedTest').disabled = false;
+            })
+            .catch(error => {
+                progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+                progressBar.classList.add('bg-danger');
+                progressBar.textContent = `Помилка: ${error.message}`;
+                document.getElementById('runSpeedTest').disabled = false;
+            });
+
+        const steps = [
+            {percent: 20, message: 'Вибір сервера...'},
+            {percent: 40, message: 'Тест завантаження...'},
+            {percent: 70, message: 'Тест відвантаження...'},
+            {percent: 90, message: 'Обробка результатів...'}
+        ];
+
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                updateProgress(step.percent, step.message);
+            }, (index + 1) * 2000);
+        });
+    });
+</script>
+{% endblock %}

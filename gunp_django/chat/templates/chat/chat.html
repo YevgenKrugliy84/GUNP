@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Чат{% endblock %}
+{% block content %}
+<h2 class="mt-4 mb-4" style="color:#ffd700;">Чат</h2>
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group mb-3">
+            <button class="list-group-item list-group-item-action active" onclick="openChat('public', null, this)">Загальний чат</button>
+            <button class="list-group-item list-group-item-action" onclick="openChat('private', {{ user.id }}, this)">
+                {% if user.is_staff %}Чат з користувачами{% else %}Чат з адміністратором{% endif %}
+            </button>
+            {% if user.is_staff %}
+            <div class="list-group-item disabled">Статистика по відділах</div>
+            {% for dept in departments %}
+            <button class="list-group-item list-group-item-action" onclick="openChat('stats', {{ dept.id }}, this)">{{ dept.name }}</button>
+            {% endfor %}
+            {% elif user_department %}
+            <button class="list-group-item list-group-item-action" onclick="openChat('stats', {{ user_department.id }}, this)">Чат зі статистикою</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-body chat-body public" id="chatBody" style="height: 500px; overflow-y:auto;"></div>
+            <div class="card-footer">
+                <form id="chatForm" class="input-group">
+                    <textarea class="form-control" id="chatMessage" rows="1" placeholder="Введіть повідомлення" required></textarea>
+                    <button type="submit" class="btn btn-primary">Надіслати</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    let currentType = 'public';
+    let currentTarget = null;
+    let lastId = 0;
+    let timer = null;
+
+    function openChat(type, targetId, btn) {
+        currentType = type;
+        currentTarget = targetId;
+        lastId = 0;
+        document.querySelectorAll('.list-group-item-action').forEach(el => el.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        const body = document.getElementById('chatBody');
+        body.className = 'chat-body ' + type;
+        body.innerHTML = '';
+        loadMessages(true);
+        if (timer) clearInterval(timer);
+        timer = setInterval(() => loadMessages(false), 3000);
+    }
+
+    function loadMessages(replace) {
+        const since = replace ? 0 : lastId;
+        let url = `{% url 'chat:messages' %}?type=${currentType}&since=${since}`;
+        if (currentTarget) url += `&target_id=${currentTarget}`;
+        fetch(url).then(r => r.json()).then(data => {
+            const body = document.getElementById('chatBody');
+            if (replace) body.innerHTML = '';
+            data.messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `chat-message ${msg.is_admin ? 'admin' : (msg.is_mine ? 'sent' : 'received')}`;
+                div.innerHTML = `<strong>${msg.sender_name}</strong> (${new Date(msg.created_at).toLocaleString('uk-UA')}): ${msg.message}`;
+                body.appendChild(div);
+                lastId = Math.max(lastId, msg.id);
+            });
+            if (data.messages.length) body.scrollTop = body.scrollHeight;
+        });
+    }
+
+    document.getElementById('chatForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const textarea = document.getElementById('chatMessage');
+        const message = textarea.value.trim();
+        if (!message) return;
+        const payload = { chat_type: currentType, message: message };
+        if (currentTarget) payload.target_id = currentTarget;
+        fetch('{% url "chat:send" %}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+            body: JSON.stringify(payload),
+        }).then(r => r.json()).then(() => { textarea.value = ''; loadMessages(false); });
+    });
+
+    openChat('public', null, document.querySelector('.list-group-item-action'));
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="search-container">
+    <h2>Пошук записів</h2>
+    <form method="POST" action="{% url 'directory:search' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="search_term" placeholder="Введіть прізвище, IP, MAC або телефон" required value="{{ search_term }}">
+        </div>
+        <button type="submit" class="submit-btn">Шукати</button>
+    </form>
+
+    {% if results is not None %}
+    <div class="search-results">
+        <h3>Результати пошуку для "{{ search_term }}"</h3>
+        {% if results %}
+        <table class="records-table">
+            <thead>
+                <tr>
+                    <th>Підрозділ</th>
+                    <th>ПІБ</th>
+                    <th>IP-адреса</th>
+                    <th>MAC-адреса</th>
+                    <th>Служба</th>
+                    <th>Кабінет</th>
+                    <th>Контакти</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in results %}
+                <tr>
+                    <td>{{ record.department.name }}</td>
+                    <td>{{ record.full_name }}</td>
+                    <td>{{ record.ip_address }}</td>
+                    <td>{{ record.mac_address }}</td>
+                    <td>{{ record.service }}</td>
+                    <td>{{ record.office }}</td>
+                    <td>
+                        {% if record.work_phone %}Роб.: {{ record.work_phone }}<br>{% endif %}
+                        {% if record.mobile_phone %}Моб.: {{ record.mobile_phone }}{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Нічого не знайдено</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Сторінку не знайдено{% endblock %}
+{% block content %}
+<div class="container mt-5 text-center" style="color:#fff;">
+    <h1>404</h1>
+    <p>Сторінку не знайдено.</p>
+    <a href="{% url 'directory:index' %}" class="btn btn-primary">На головну</a>
+</div>
+{% endblock %}

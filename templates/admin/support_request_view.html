@@ -1,0 +1,48 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Перегляд заявки #{{ support_request.id }}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Деталі заявки</h5>
+            <p><strong>ПІБ:</strong> {{ support_request.name }}</p>
+            <p><strong>Підрозділ:</strong> {{ support_request.department.name if support_request.department else 'Не вказано' }}</p>
+            <p><strong>Email:</strong> {{ support_request.email }}</p>
+            <p><strong>Тип проблеми:</strong> {{ support_request.issue_type }}</p>
+            <p><strong>Опис:</strong> {{ support_request.description }}</p>
+            <p><strong>Терміновість:</strong> {{ support_request.urgency }}</p>
+            <p><strong>Статус:</strong>
+                <span class="badge
+                    {% if support_request.status == 'new' %}bg-primary
+                    {% elif support_request.status == 'in_progress' %}bg-warning
+                    {% elif support_request.status == 'resolved' %}bg-success
+                    {% else %}bg-secondary{% endif %}">
+                    {{ support_request.status }}
+                </span>
+            </p>
+            <p><strong>Дата створення:</strong> {{ support_request.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{{ url_for('admin.edit_support_request', request_id=support_request.id) }}" class="btn btn-primary">Редагувати</a>
+        <form action="{{ url_for('admin.delete_support_request', request_id=support_request.id) }}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Ви впевнені, що хочете видалити цю заявку?')">Видалити</button>
+        </form>
+        <a href="{{ url_for('admin.manage_support_requests') }}" class="btn btn-secondary">Повернутися до списку</a>
+    </div>
+</div>
+{% endblock %}

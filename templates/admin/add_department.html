@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Додати підрозділ</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('admin.add_department') }}">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            <label for="name" class="form-label">Назва підрозділу</label>
+            {{ form.name(class="form-control", id="name", required=True) }}
+            {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="ip_address" class="form-label">IP-адреса</label>
+            {{ form.ip_address(class="form-control", id="ip_address", placeholder="192.168.1.1") }}
+            {% if form.ip_address.errors %}
+                {% for error in form.ip_address.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Додати</button>
+        <a href="{{ url_for('admin.manage_departments') }}" class="btn btn-secondary">Скасувати</a>
+    </form>
+</div>
+{% endblock %}

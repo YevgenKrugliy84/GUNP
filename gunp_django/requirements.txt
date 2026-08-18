@@ -1,0 +1,4 @@
+Django>=5.0,<5.1
+django-import-export>=4.0
+python-decouple>=3.8
+speedtest-cli>=2.1.3

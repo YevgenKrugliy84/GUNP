@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Ресурси</h1>
+
+    <div class="mb-4">
+        <h3>Заявка на підключення до мережі Інтернет</h3>
+        <a href="{% url 'directory:download_form' %}" class="btn btn-primary">Завантажити форму (Word)</a>
+    </div>
+
+    <form method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Пошук у базі знань" value="{{ search_term }}">
+            <button type="submit" class="btn btn-outline-primary">Пошук</button>
+        </div>
+    </form>
+
+    {% for category in categories %}
+    <h4 class="mt-4">{{ category }}</h4>
+    <div class="accordion mb-3">
+        {% for article in articles %}
+            {% if article.category == category %}
+            <div class="card">
+                <div class="card-header"><strong>{{ article.title }}</strong></div>
+                <div class="card-body">{{ article.content|linebreaks }}</div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% empty %}
+    <p>Статей у базі знань поки немає.</p>
+    {% endfor %}
+</div>
+{% endblock %}

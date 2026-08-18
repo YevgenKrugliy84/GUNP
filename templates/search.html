@@ -5,7 +5,7 @@
     <h2>Пошук записів</h2>
     <form method="POST" action="{{ url_for('search') }}">
         <div class="form-group">
-            <input type="text" name="search_term" placeholder="Введіть прізвище, IP або MAC" required>
+            <input type="text" name="search_term" placeholder="Введіть прізвище, IP, MAC або телефон" required>
         </div>
         <button type="submit" class="submit-btn">Шукати</button>
     </form>
@@ -23,6 +23,7 @@
                     <th>MAC-адреса</th>
                     <th>Служба</th>
                     <th>Кабінет</th>
+                    <th>Контакти</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +35,10 @@
                     <td>{{ record.mac_address }}</td>
                     <td>{{ record.service }}</td>
                     <td>{{ record.office }}</td>
+                    <td>
+                        {% if record.work_phone %}Роб.: {{ record.work_phone }}<br>{% endif %}
+                        {% if record.mobile_phone %}Моб.: {{ record.mobile_phone }}{% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

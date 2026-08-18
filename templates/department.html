@@ -1,31 +1,69 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="department-container">
-    <h2>{{ department.name }}</h2>
-    <a href="{{ url_for('add_record', dept_id=department.id) }}" class="add-btn">+ Додати запис</a>
+<div class="department-container mt-5">
+    <h2>Записи для підрозділу: {{ department.name | safe }}</h2>
 
-    <table class="records-table">
-        <thead>
-            <tr>
-                <th>ПІБ</th>
-                <th>IP-адреса</th>
-                <th>MAC-адреса</th>
-                <th>Служба</th>
-                <th>Кабінет</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for record in records %}
-            <tr>
-                <td>{{ record.last_name }} {{ record.first_name }} {{ record.middle_name or '' }}</td>
-                <td>{{ record.ip_address }}</td>
-                <td>{{ record.mac_address }}</td>
-                <td>{{ record.service }}</td>
-                <td>{{ record.office }}</td>
-            </tr>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
+        {% endif %}
+    {% endwith %}
+
+    <div class="action-buttons">
+        <a href="{{ url_for('admin.add_record') }}" class="btn btn-primary add-btn">Додати запис</a>
+        <a href="{{ url_for('export_csv', dept_id=department.id) }}" class="btn btn-secondary">Експортувати в CSV</a>
+        <form action="{{ url_for('import_csv', dept_id=department.id) }}" method="POST" enctype="multipart/form-data" class="d-inline" id="import-form">
+            <input type="file" name="csv_file" accept=".csv" class="form-control d-inline-block w-auto">
+            <button type="submit" class="btn btn-secondary">Імпортувати CSV</button>
+        </form>
+    </div>
+
+    {% if records %}
+        <table class="table table-striped records-table">
+            <thead>
+                <tr>
+                    <th>ПІБ</th>
+                    <th>IP-адреса</th>
+                    <th>MAC-адреса</th>
+                    <th>Служба</th>
+                    <th>Кабінет</th>
+                    <th>Робочий телефон</th>
+                    <th>Мобільний телефон</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                    <tr>
+                        <td>{{ (record.last_name ~ ' ' ~ record.first_name ~ ' ' ~ (record.middle_name or '')) | trim }}</td>
+                        <td>{{ record.ip_address or '-' }}</td>
+                        <td>{{ record.mac_address or '-' }}</td>
+                        <td>{{ record.service or '-' }}</td>
+                        <td>{{ record.office or '-' }}</td>
+                        <td>{{ record.work_phone or '-' }}</td>
+                        <td>{{ record.mobile_phone or '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.edit_record', record_id=record.id) }}" class="btn btn-sm btn-primary">Редагувати</a>
+                            <form action="{{ url_for('admin.delete_record', record_id=record.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Ви впевнені, що хочете видалити цей запис?')">Видалити</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Записи для цього підрозділу відсутні.</p>
+    {% endif %}
+
+    <a href="{{ url_for('admin.manage_departments') }}" class="btn btn-secondary mt-3">Повернутися до списку підрозділів</a>
 </div>
 {% endblock %}

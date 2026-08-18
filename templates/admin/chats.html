@@ -1,0 +1,95 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>Управління чатами</h1>
+<div class="chat-tabs">
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#public-chat">Загальний чат</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#private-chat">Чат з адміністратором</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#stats-chat">Чат відділу статистики</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="public-chat" class="tab-pane active">
+            <div id="public-messages" class="chat-messages">
+                {% for msg in public_messages %}
+                <p><strong>{{ msg.sender_name }} ({{ msg.created_at }}):</strong> {{ msg.message }}</p>
+                {% endfor %}
+            </div>
+            <form method="POST">
+                <input type="hidden" name="chat_type" value="public">
+                <textarea name="message" required></textarea>
+                <button type="submit">Надіслати</button>
+            </form>
+        </div>
+        <div id="private-chat" class="tab-pane">
+            <h3>Чат з користувачами</h3>
+            {% for user in users %}
+            <h4>Користувач: {{ user.username }} ({{ user.department or 'Невідомий' }})</h4>
+            <div class="chat-messages" id="private-messages-{{ user.id }}">
+                {% for msg in private_conversations|selectattr('user_id', 'equalto', user.id|string)|map(attribute='messages')|first|default([]) %}
+                <p><strong>{{ msg.sender_name }} ({{ msg.created_at }}):</strong> {{ msg.message }}</p>
+                {% endfor %}
+            </div>
+            <form method="POST">
+                <input type="hidden" name="chat_type" value="private">
+                <input type="hidden" name="target_id" value="{{ user.id }}">
+                <textarea name="message" required></textarea>
+                <button type="submit">Надіслати</button>
+            </form>
+            {% else %}
+            <p>Немає доступних користувачів для чату.</p>
+            {% endfor %}
+        </div>
+        <div id="stats-chat" class="tab-pane">
+            <h3>Чат з підрозділами</h3>
+            {% for dept in departments %}
+            <h4>Підрозділ: {{ dept.name }}</h4>
+            <div class="chat-messages" id="stats-messages-{{ dept.id }}">
+                {% for msg in stats_conversations|selectattr('dept_id', 'equalto', dept.id|string)|map(attribute='messages')|first|default([]) %}
+                <p><strong>{{ msg.sender_name }} ({{ msg.created_at }}):</strong> {{ msg.message }}</p>
+                {% endfor %}
+            </div>
+            <form method="POST">
+                <input type="hidden" name="chat_type" value="stats">
+                <input type="hidden" name="target_id" value="{{ dept.id }}">
+                <textarea name="message" required></textarea>
+                <button type="submit">Надіслати</button>
+            </form>
+            {% else %}
+            <p>Немає доступних підрозділів для чату.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<script>
+    const socket = io();
+    socket.on('connect', () => {
+        console.log('Connected to SocketIO');
+        socket.emit('join_public_chat');
+        {% for user in users %}
+        socket.emit('join_private_chat', { userId: '{{ user.id }}' });
+        {% endfor %}
+        {% for dept in departments %}
+        socket.emit('join_stats_chat', { userId: '{{ dept.id }}' });
+        {% endfor %}
+    });
+    socket.on('receive_message', (data) => {
+        let messagesDiv;
+        if (data.type === 'public') {
+            messagesDiv = document.getElementById('public-messages');
+        } else if (data.type === 'private') {
+            messagesDiv = document.getElementById(`private-messages-${data.userId}`);
+        } else if (data.type === 'stats') {
+            messagesDiv = document.getElementById(`stats-messages-${data.userId.replace('dept_', '')}`);
+        }
+        if (messagesDiv) {
+            const msg = `<p><strong>${data.sender_name} (${data.created_at}):</strong> ${data.message}</p>`;
+            messagesDiv.innerHTML += msg;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    });
+    socket.on('error', (error) => {
+        console.error('SocketIO error:', error);
+    });
+</script>
+{% endblock %}

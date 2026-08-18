@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Додати новий запис для {{ department.name }}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('add_record_public', dept_id=dept_id) }}" id="add-record-form">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="last_name" class="form-label">Прізвище*</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="first_name" class="form-label">Ім'я*</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="middle_name" class="form-label">По батькові</label>
+                        <input type="text" class="form-control" id="middle_name" name="middle_name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="ip_address" class="form-label">IP-адреса*</label>
+                        <input type="text" class="form-control" id="ip_address" name="ip_address" required placeholder="192.168.1.1">
+                        <div class="invalid-feedback">Введіть коректну IP-адресу (наприклад, 192.168.1.1)</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="mac_address" class="form-label">MAC-адреса*</label>
+                        <input type="text" class="form-control" id="mac_address" name="mac_address" required placeholder="00:14:22:01:23:45">
+                        <div class="invalid-feedback">Введіть коректну MAC-адресу (наприклад, 00:14:22:01:23:45)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="service" class="form-label">Служба/підрозділ*</label>
+                        <input type="text" class="form-control" id="service" name="service" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="office" class="form-label">Кабінет*</label>
+                        <input type="text" class="form-control" id="office" name="office" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="work_phone" class="form-label">Робочий телефон</label>
+                        <input type="text" class="form-control" id="work_phone" name="work_phone" placeholder="+380XXXXXXXXX">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="mobile_phone" class="form-label">Мобільний телефон</label>
+                        <input type="text" class="form-control" id="mobile_phone" name="mobile_phone" placeholder="+380XXXXXXXXX">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary me-md-2">Назад</a>
+                <button type="submit" class="btn btn-primary submit-btn">Зберегти</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-record-form').addEventListener('submit', function(e) {
+        const ipInput = document.getElementById('ip_address');
+        const macInput = document.getElementById('mac_address');
+        const ipPattern = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        const macPattern = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
+
+        ipInput.classList.remove('is-invalid');
+        macInput.classList.remove('is-invalid');
+
+        let isValid = true;
+
+        if (!ipPattern.test(ipInput.value)) {
+            ipInput.classList.add('is-invalid');
+            isValid = false;
+        }
+        if (!macPattern.test(macInput.value)) {
+            macInput.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

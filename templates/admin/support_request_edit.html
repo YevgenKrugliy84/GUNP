@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Редагувати заявку #{{ support_request.id }}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('admin.edit_support_request', request_id=support_request.id) }}">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            <label for="status" class="form-label">Статус</label>
+            {{ form.status(class="form-control", id="status") }}
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Опис</label>
+            {{ form.description(class="form-control", id="description", rows=5) }}
+        </div>
+        <div class="mb-3">
+            <label for="admin_response" class="form-label">Відповідь адміністратора</label>
+            <textarea class="form-control" id="admin_response" name="admin_response" rows="5">{{ support_request.admin_response or '' }}</textarea>
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin.manage_support_requests') }}" class="btn btn-secondary">Скасувати</a>
+    </form>
+</div>
+{% endblock %}

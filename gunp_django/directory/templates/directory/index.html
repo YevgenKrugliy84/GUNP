@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Головна - УІАП ГУНП у м. Києві{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="departments-list">
+        <h2>Підрозділи</h2>
+        {% if departments %}
+            <div class="grid">
+                {% for department in departments %}
+                <div class="department-card {% if department.last_status %}online{% else %}offline{% endif %}" data-dept-id="{{ department.id }}">
+                    <a href="{% url 'directory:add_record_public' dept_id=department.id %}" class="department-name">
+                        {{ department.name }}
+                    </a>
+                    <div class="status-info">
+                        <span class="status-indicator">
+                            {% if department.last_status %}Онлайн{% else %}Офлайн{% endif %}
+                        </span>
+                        <a href="{% url 'directory:check_support_request' %}" class="status-eye" title="Переглянути заявку">
+                            {% if department.latest_request %}
+                                <i class="fas fa-eye" style="color: {% if department.latest_request.status == 'resolved' %}#28a745{% else %}#dc3545{% endif %}"></i>
+                            {% else %}
+                                <i class="fas fa-eye" style="color: #6c757d"></i>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                Немає доступних підрозділів. Зверніться до адміністратора.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    fetch('{% url "directory:department_statuses" %}')
+        .then(r => r.json())
+        .then(statuses => {
+            statuses.forEach(s => {
+                const card = document.querySelector(`.department-card[data-dept-id="${s.id}"]`);
+                if (!card) return;
+                card.classList.toggle('online', s.status === 'online');
+                card.classList.toggle('offline', s.status !== 'online');
+                const indicator = card.querySelector('.status-indicator');
+                if (indicator) indicator.textContent = s.status === 'online' ? 'Онлайн' : 'Офлайн';
+            });
+        })
+        .catch(err => console.error('Failed to load department statuses:', err));
+</script>
+{% endblock %}
