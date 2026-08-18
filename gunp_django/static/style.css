@@ -1,137 +1,35 @@
-/* Основні стилі */
+/* GUNP — модерн-стилі (узгоджені з палітрою в base.html) */
+
+:root {
+    --ukraine-blue: #0a4fb0;
+    --ukraine-yellow: #ffcc33;
+    --ukraine-dark-blue: #082f6e;
+    --ukraine-light-blue: #5d8bf4;
+    --gunp-muted: #5b6478;
+    --gunp-radius: 14px;
+    --gunp-radius-sm: 10px;
+    --gunp-shadow: 0 8px 24px rgba(8, 32, 79, 0.12);
+    --gunp-shadow-sm: 0 2px 8px rgba(8, 32, 79, 0.08);
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to bottom, #0057B7 0%, #0057B7 50%, #FFD700 50%, #FFD700 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    color: #333;
+    font-family: 'Manrope', 'Segoe UI', sans-serif;
     line-height: 1.6;
 }
 
-/* Кольори України */
-:root {
-    --ukraine-blue: #0057B7;
-    --ukraine-yellow: #FFD700;
-    --ukraine-dark-blue: #0033A0;
-    --ukraine-light-blue: #5D8BF4;
-}
-
-/* Шапка */
-header {
-    background-color: var(--ukraine-dark-blue);
-    color: white;
-    padding: 1rem 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border-bottom: 3px solid var(--ukraine-yellow);
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.logo {
-    height: 60px;
-    margin-right: 20px;
-}
-
-h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    text-align: center;
-}
-
-/* ОНОВЛЕНА НАВІГАЦІЯ - більш виразна */
-nav {
-    background-color: var(--ukraine-blue);
-    padding: 1rem 0; /* Збільшено вертикальний відступ */
-    text-align: center;
-    position: relative;
-    z-index: 100;
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-nav a {
-    color: var(--ukraine-yellow);
-    text-decoration: none;
-    margin: 0 20px; /* Збільшено відступи між посиланнями */
-    font-weight: 800; /* Дуже жирний текст */
-    font-size: 1.3rem; /* Збільшений розмір */
-    transition: all 0.3s ease;
-    padding: 8px 12px; /* Додатковий внутрішній відступ */
-    position: relative;
-    text-transform: uppercase; /* Всі літери великі */
-    letter-spacing: 0.5px; /* Відстань між літерами */
-}
-
-nav a:hover {
-    color: white;
-    text-shadow: 0 0 10px var(--ukraine-yellow);
-    transform: translateY(-2px);
-}
-
-/* Ефект підкреслення при наведенні */
-nav a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 3px;
-    bottom: 0;
-    left: 0;
-    background-color: var(--ukraine-yellow);
-    transition: width 0.3s ease;
-}
-
-nav a:hover::after {
-    width: 100%;
-}
-
-/* Основний контент */
-main {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    min-height: calc(100vh - 200px);
-    position: relative;
-    z-index: 1;
-}
-
-/* Стилі для списку підрозділів */
-.departments-list {
-    padding: 20px 0;
-    display: block;
-    visibility: visible;
-    opacity: 1;
-}
+/* Список підрозділів */
+.departments-list { padding: 4px 0 20px; }
 
 .departments-list h2 {
     color: var(--ukraine-blue);
-    text-align: center;
-    margin-bottom: 20px;
+    font-weight: 800;
+    margin-bottom: 24px;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    visibility: visible;
-    opacity: 1;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
 }
 
 .department-card {
@@ -139,27 +37,28 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 5px;
+    padding: 18px;
+    border-radius: var(--gunp-radius-sm);
     text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    height: 80px;
+    font-weight: 700;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: var(--gunp-shadow-sm);
+    min-height: 88px;
+    border: 1px solid transparent;
+    background: #fff;
 }
 
 .department-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transform: translateY(-4px);
+    box-shadow: var(--gunp-shadow);
 }
 
 .department-name {
-    color: #333;
+    color: var(--gunp-text, #1c2333);
     text-decoration: none;
     text-align: center;
     flex-grow: 1;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .status-info {
@@ -168,531 +67,232 @@ main {
     gap: 10px;
 }
 
-.status-eye {
-    font-size: 1.2em;
-    text-decoration: none;
-}
-
-.status-eye:hover i {
-    opacity: 0.8;
-}
+.status-eye { font-size: 1.1em; text-decoration: none; }
+.status-eye:hover i { opacity: 0.8; }
 
 .online {
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
-    color: #155724;
+    background: #e9f9ef;
+    border-color: #b9ecc9;
+    color: #157a44;
 }
 
 .offline {
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    color: #721c24;
+    background: #fdedee;
+    border-color: #f3c2c6;
+    color: #b3273c;
 }
 
-.status-indicator {
-    font-size: 0.9em;
-    font-weight: bold;
-}
+.status-indicator { font-size: 0.85em; font-weight: 700; letter-spacing: 0.02em; }
+.status-badge { font-weight: bold; }
 
-.status-badge {
-    font-weight: bold;
-}
-
-/* Стилі для сторінки підрозділу */
+/* Сторінка підрозділу */
 .department-container {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-top: 20px;
+    background: #fff;
+    border-radius: var(--gunp-radius-sm);
 }
 
 .add-btn {
     display: inline-block;
     background: var(--ukraine-yellow);
-    color: var(--ukraine-blue);
-    padding: 10px 15px;
-    border-radius: 5px;
+    color: var(--ukraine-dark-blue);
+    padding: 10px 18px;
+    border-radius: var(--gunp-radius-sm);
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
     margin-bottom: 15px;
-    transition: all 0.3s ease;
+    transition: all 0.18s ease;
 }
 
-.add-btn:hover {
-    background: #e6c200;
-}
+.add-btn:hover { background: #f0b90b; transform: translateY(-1px); }
 
-/* Стилі для таблиць */
+/* Таблиці */
 .records-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-top: 15px;
+    border-radius: var(--gunp-radius-sm);
+    overflow: hidden;
+    box-shadow: var(--gunp-shadow-sm);
 }
 
 .records-table th, .records-table td {
-    padding: 12px 15px;
+    padding: 13px 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eef1f7;
 }
 
 .records-table th {
-    background-color: var(--ukraine-blue);
-    color: var(--ukraine-yellow);
+    background: var(--ukraine-blue);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
-.records-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
+.records-table tr:nth-child(even) { background-color: #f7f9fc; }
+.records-table tr:hover { background-color: #eef2fb; }
 
-.records-table tr:hover {
-    background-color: #e6e6e6;
-}
-
-/* Стилі для форм */
+/* Форми */
 .form-container {
-    max-width: 600px;
+    max-width: 640px;
     margin: 20px auto;
-    padding: 25px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 28px;
+    background: #fff;
+    border-radius: var(--gunp-radius);
+    box-shadow: var(--gunp-shadow-sm);
 }
 
-.form-group {
-    margin-bottom: 20px;
-}
+.form-group { margin-bottom: 20px; }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    font-weight: bold;
+    font-weight: 700;
     color: var(--ukraine-blue);
+    font-size: 0.92rem;
 }
 
-.form-group input, .form-group select, .form-group textarea {
+.form-group input, .form-group select, .form-group textarea,
+input.form-control, select.form-control, textarea.form-control,
+input[type="text"], input[type="email"], input[type="password"], select, textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 11px 14px;
+    border: 1.5px solid #e1e6f0;
+    border-radius: var(--gunp-radius-sm);
     box-sizing: border-box;
     font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.form-control:focus {
+.form-control:focus, input:focus, select:focus, textarea:focus {
     border-color: var(--ukraine-blue);
-    box-shadow: 0 0 0 0.25rem rgba(0, 87, 183, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(10, 79, 176, 0.15);
+    outline: none;
 }
 
 .submit-btn {
-    background-color: var(--ukraine-blue);
+    background: var(--ukraine-blue);
     color: white;
-    padding: 12px 20px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--gunp-radius-sm);
     cursor: pointer;
     font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    font-weight: 700;
+    transition: background-color 0.2s;
 }
 
-.submit-btn:hover {
-    background-color: var(--ukraine-dark-blue);
-}
+.submit-btn:hover { background-color: var(--ukraine-dark-blue); }
 
-/* Стилі для пошуку */
+/* Пошук */
 .search-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 25px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 8px;
 }
 
 .search-container input[type="text"] {
-    width: 100%;
-    padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
 }
 
-/* Стилі для сторінки техпідтримки */
+/* Техпідтримка */
 .support-container {
     max-width: 800px;
-    margin: 30px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 10px auto 30px;
+    padding: 0;
 }
 
 .flag-divider {
     display: flex;
-    width: 150px;
+    width: 140px;
     height: 4px;
-    margin: 15px auto 30px;
+    margin: 10px auto 30px;
+    border-radius: 2px;
+    overflow: hidden;
 }
 
-.blue-line {
-    flex: 1;
-    background: var(--ukraine-blue);
-}
+.blue-line { flex: 1; background: var(--ukraine-blue); }
+.yellow-line { flex: 1; background: var(--ukraine-yellow); }
 
-.yellow-line {
-    flex: 1;
-    background: var(--ukraine-yellow);
-}
-
-.support-form {
-    margin-bottom: 40px;
-}
+.support-form { margin-bottom: 32px; }
 
 .support-info {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
+    background: #f4f7fc;
+    padding: 20px 22px;
+    border-radius: var(--gunp-radius-sm);
     border-left: 4px solid var(--ukraine-blue);
 }
 
-.support-info h3 {
-    color: var(--ukraine-blue);
-    margin-top: 0;
-}
-
-.support-info p {
-    margin-bottom: 10px;
-}
-
-.form-control {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-}
+.support-info h3 { color: var(--ukraine-blue); margin-top: 0; font-weight: 800; }
+.support-info p { margin-bottom: 10px; }
 
 .btn-primary {
     background: var(--ukraine-blue);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s;
-}
-
-.btn-primary:hover {
-    background: var(--ukraine-dark-blue);
+    border-color: var(--ukraine-blue);
 }
 
 /* IP калькулятор */
-.ip-calculator-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-.ip-calculator-container h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #2c3e50;
-}
+.ip-calculator-container { max-width: 800px; margin: 0 auto; padding: 0; }
+.ip-calculator-container h1 { text-align: center; margin-bottom: 1.6rem; color: var(--ukraine-blue); font-weight: 800; }
 
 .calculator-form {
-    background: #fff;
+    background: #f4f7fc;
     padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
+    border-radius: var(--gunp-radius-sm);
+    margin-bottom: 1.6rem;
 }
 
-.input-group {
-    display: flex;
-    gap: 10px;
-}
-
-.input-group input {
-    flex: 1;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-}
+.input-group { display: flex; gap: 10px; }
+.input-group input { flex: 1; }
 
 .input-group button {
     padding: 0.75rem 1.5rem;
-    background-color: #3498db;
+    background: var(--ukraine-blue);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--gunp-radius-sm);
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s;
-}
-
-.input-group button:hover {
-    background-color: #2980b9;
-}
-
-.error-message {
-    color: #e74c3c;
-    margin-top: 0.5rem;
-    min-height: 1.2rem;
-}
-
-.result-container {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.result-placeholder {
-    color: #7f8c8d;
-    text-align: center;
-}
-
-.result-item {
-    margin-bottom: 0.8rem;
-}
-
-.result-item strong {
-    color: #2c3e50;
-    display: inline-block;
-    width: 180px;
-}
-
-/* Стилі для кнопок дій */
-.action-buttons {
-    margin-bottom: 20px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.action-buttons input[type="file"] {
-    display: inline-block;
-    width: auto;
-    padding: 5px;
-}
-
-/* Стилі для статусів */
-.text-success {
-    color: #28a745 !important;
-}
-
-.text-danger {
-    color: #dc3545 !important;
-}
-
-/* Підвал */
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    padding: 10px;
-    background-color: var(--ukraine-dark-blue);
-    color: var(--ukraine-yellow);
-    text-align: center;
-    border-top: 3px solid var(--ukraine-yellow);
-}
-
-/* Адаптація для малих екранів */
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .logo {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
-    }
-
-    .department-card {
-        padding: 15px;
-        height: 70px;
-        font-size: 14px;
-    }
-
-    .records-table th, .records-table td {
-        padding: 8px 10px;
-    }
-
-    .support-container {
-        padding: 15px;
-    }
-
-    .form-control {
-        font-size: 14px;
-    }
-
-    .input-group {
-        flex-direction: column;
-    }
-
-    .input-group button {
-        width: 100%;
-    }
-
-    /* Адаптація навігації для мобільних */
-    nav a {
-        font-size: 1.1rem;
-        margin: 0 10px;
-        padding: 6px 8px;
-    }
-
-    .nav-container {
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-}
-
-@media (max-width: 576px) {
-    .department-card {
-        height: auto;
-        padding: 10px;
-    }
-
-    .department-name {
-        font-size: 12px;
-    }
-
-    .status-info {
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    .status-eye {
-        font-size: 1.1em;
-    }
-
-    /* Додаткові адаптації для дуже малих екранів */
-    nav a {
-        font-size: 0.9rem;
-        margin: 0 5px;
-        padding: 4px 6px;
-    }
-}
-
-@media (max-height: 600px) {
-    footer {
-        position: static;
-    }
-}
-.chat-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 20px auto;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.chat-container h3 {
-    margin: 0 0 10px;
-    font-size: 1.5em;
-    text-align: center;
-    color: #333;
-}
-
-.chat-tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 10px;
-}
-
-.chat-tab {
-    padding: 10px 15px;
-    border: none;
-    background-color: #e0e0e0;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 1em;
+    font-weight: 700;
     transition: background-color 0.2s;
 }
 
-.chat-tab.active {
-    background-color: #007bff;
-    color: white;
+.input-group button:hover { background: var(--ukraine-dark-blue); }
+
+.error-message { color: #d0392f; margin-top: 0.5rem; min-height: 1.2rem; font-weight: 600; }
+
+.result-container {
+    background: #f4f7fc;
+    padding: 1.5rem;
+    border-radius: var(--gunp-radius-sm);
 }
 
-.chat-tab:hover {
-    background-color: #d0d0d0;
+.result-placeholder { color: var(--gunp-muted); text-align: center; }
+.result-item { margin-bottom: 0.8rem; }
+.result-item strong { color: var(--ukraine-blue); display: inline-block; width: 180px; }
+
+/* Кнопки дій */
+.action-buttons { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.action-buttons input[type="file"] { display: inline-block; width: auto; padding: 5px; }
+
+.text-success { color: #157a44 !important; }
+.text-danger { color: #b3273c !important; }
+
+/* Адаптація */
+@media (max-width: 768px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .department-card { padding: 14px; min-height: 70px; font-size: 14px; }
+    .records-table th, .records-table td { padding: 9px 11px; }
+    .form-container { padding: 18px; }
+    .input-group { flex-direction: column; }
+    .input-group button { width: 100%; }
 }
 
-.chat-messages {
-    height: 400px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    background-color: white;
-    margin-bottom: 10px;
-}
-
-.chat-message {
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 4px;
-    word-wrap: break-word;
-}
-
-.chat-message.sent {
-    background-color: #007bff;
-    color: white;
-    margin-left: 20%;
-    text-align: right;
-}
-
-.chat-message.received {
-    background-color: #e9ecef;
-    margin-right: 20%;
-}
-
-.chat-message.admin {
-    background-color: #28a745;
-    color: white;
-    margin-right: 20%;
-}
-
-.chat-input-container {
-    display: flex;
-    gap: 10px;
-}
-
-#onlineChatMessage {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    resize: none;
-    font-size: 1em;
-}
-
-#onlineChatForm button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-}
-
-#onlineChatForm button:hover {
-    background-color: #0056b3;
+@media (max-width: 576px) {
+    .department-card { min-height: auto; padding: 12px; }
+    .department-name { font-size: 13px; }
+    .status-info { flex-direction: row; justify-content: center; }
 }

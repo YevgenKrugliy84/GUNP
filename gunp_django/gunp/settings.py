@@ -18,8 +18,15 @@ DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['10.111.16.6', 'localhost', '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://10.111.16.6:8095',
+    'http://localhost:8095',
+    'http://127.0.0.1:8095',
+]
+
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,6 +38,54 @@ INSTALLED_APPS = [
     'directory',
     'chat',
 ]
+
+JAZZMIN_SETTINGS = {
+    'site_title': 'GUNP — Адмінпанель',
+    'site_header': 'ГУНП у м. Києві',
+    'site_brand': 'УІАП ГУНП',
+    'welcome_sign': 'Адміністративна панель УІАП ГУНП у м. Києві',
+    'copyright': 'УІАП ГУНП у м. Києві',
+    'search_model': ['directory.Record', 'directory.Department'],
+    'show_ui_builder': False,
+    'navigation_expanded': True,
+    'topmenu_links': [
+        {'name': 'На сайт', 'url': 'directory:index', 'permissions': []},
+        {'name': 'Чат', 'url': 'chat:room', 'permissions': ['auth.view_user']},
+    ],
+    'icons': {
+        'auth.user': 'fas fa-user',
+        'accounts.user': 'fas fa-user',
+        'auth.Group': 'fas fa-users',
+        'directory.department': 'fas fa-building',
+        'directory.record': 'fas fa-address-card',
+        'directory.supportrequest': 'fas fa-life-ring',
+        'directory.knowledgebasearticle': 'fas fa-book',
+        'directory.downloadlog': 'fas fa-download',
+        'chat.publicchatmessage': 'fas fa-comments',
+        'chat.privatechatmessage': 'fas fa-comment-dots',
+    },
+    'default_icon_parents': 'fas fa-chevron-circle-right',
+    'default_icon_children': 'fas fa-circle',
+    'order_with_respect_to': ['directory', 'accounts', 'chat', 'auth'],
+}
+
+JAZZMIN_UI_TWEAKS = {
+    'theme': 'flatly',
+    'dark_mode_theme': 'darkly',
+    'navbar': 'navbar-dark',
+    'brand_colour': 'navbar-primary',
+    'accent': 'accent-primary',
+    'sidebar': 'sidebar-dark-primary',
+    'no_navbar_border': True,
+    'button_classes': {
+        'primary': 'btn-primary',
+        'secondary': 'btn-secondary',
+        'info': 'btn-info',
+        'warning': 'btn-warning',
+        'danger': 'btn-danger',
+        'success': 'btn-success',
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -7,53 +7,108 @@
     <title>{% block title %}УПРАВЛІННЯ ІНФОРМАЦІЙНОЇ АНАЛІТИЧНОЇ ПІДТРИМКИ ГУНП у м. Києві{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        html, body { height: 100vh; margin: 0; padding: 0; overflow-y: auto; background-color: #0057b7; font-family: 'Ubuntu', sans-serif; }
-        .header { background-color: #0057b7; color: #ffd700; padding: 10px 0; position: relative; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
-        .logo-container { margin-right: 20px; }
-        .logo { height: 80px; }
-        h1 { font-size: 1.8rem; font-weight: 700; margin: 0; text-align: center; }
-        .navbar { background-color: #0057b7; margin-bottom: 20px; }
-        .navbar-nav .nav-link { color: white !important; font-weight: 500; margin: 0 10px; }
-        .navbar-nav .nav-link:hover { color: #ffd700 !important; }
-        footer { background-color: #0057b7; color: white; text-align: center; padding: 10px 0; width: 100%; }
+        :root {
+            --gunp-blue: #0a4fb0;
+            --gunp-blue-dark: #082f6e;
+            --gunp-blue-deep: #051d45;
+            --gunp-gold: #ffcc33;
+            --gunp-gold-soft: #ffe08a;
+            --gunp-surface: #ffffff;
+            --gunp-bg: #eef2f9;
+            --gunp-text: #1c2333;
+            --gunp-muted: #5b6478;
+            --gunp-radius: 14px;
+            --gunp-shadow: 0 8px 24px rgba(8, 32, 79, 0.12);
+            --gunp-shadow-sm: 0 2px 8px rgba(8, 32, 79, 0.08);
+        }
+        html, body { min-height: 100vh; margin: 0; padding: 0; background: var(--gunp-bg); font-family: 'Manrope', 'Segoe UI', sans-serif; color: var(--gunp-text); }
+        h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.01em; }
+        a { color: var(--gunp-blue); }
+
+        .header {
+            background: linear-gradient(120deg, var(--gunp-blue-deep) 0%, var(--gunp-blue) 60%, var(--gunp-blue) 100%);
+            color: #fff;
+            padding: 22px 0;
+            position: relative;
+            box-shadow: var(--gunp-shadow);
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gunp-gold) 0%, var(--gunp-gold-soft) 100%);
+        }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 20px; padding: 0 20px; }
+        .logo-container { display: flex; align-items: center; }
+        .logo { height: 56px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25)); }
+        h1 { font-size: 1.5rem; font-weight: 800; margin: 0; text-align: center; letter-spacing: -0.01em; }
+
+        .navbar { background: rgba(10, 79, 176, 0.97); backdrop-filter: blur(6px); margin-bottom: 28px; position: sticky; top: 0; z-index: 1030; box-shadow: 0 1px 0 rgba(255,255,255,0.08); }
+        .navbar-nav .nav-link { color: rgba(255,255,255,0.88) !important; font-weight: 600; margin: 0 4px; padding: 10px 14px !important; border-radius: 8px; transition: all 0.15s ease; font-size: 0.92rem; }
+        .navbar-nav .nav-link:hover { color: #fff !important; background: rgba(255,255,255,0.1); }
+
+        main.container {
+            background: var(--gunp-surface);
+            border-radius: var(--gunp-radius);
+            box-shadow: var(--gunp-shadow);
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        footer { background: var(--gunp-blue-deep); color: rgba(255,255,255,0.75); text-align: center; padding: 18px 0; width: 100%; font-size: 0.88rem; }
         .footer-flag { margin-top: 10px; }
-        .flag-stripe { height: 5px; width: 100%; }
-        .blue { background-color: #0057b7; }
-        .yellow { background-color: #ffd700; }
-        .chat-icon { position: fixed; bottom: 20px; left: 20px; z-index: 1000; }
-        .chat-icon button { width: 60px; height: 60px; font-size: 24px; background-color: #0057b7; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .chat-icon button:hover { background-color: #ffd700; color: #0057b7; }
-        .chat-popup { position: fixed; bottom: 90px; left: 20px; width: 350px; display: none; z-index: 1000; background-color: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); flex-direction: column; }
-        .chat-header { background-color: #0057b7; color: white; padding: 10px; border-radius: 8px 8px 0 0; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
-        .chat-tabs { padding: 10px; background-color: #f1f1f1; flex-shrink: 0; display: flex; gap: 5px; }
-        .chat-tabs button { flex: 1; font-size: 14px; padding: 8px; border-radius: 5px; background-color: #e9ecef; border: none; }
-        .chat-tabs button.active { background-color: #0057b7; color: white; }
-        .chat-body { height: 400px; overflow-y: auto; padding: 10px; transition: background-color 0.3s; }
-        .chat-body.public { background-color: #e6f0fa; }
-        .chat-body.private { background-color: #e6ffe6; }
-        .chat-body.stats { background-color: #fffde7; }
-        .chat-message { margin-bottom: 10px; padding: 8px 12px; border-radius: 5px; max-width: 80%; word-wrap: break-word; }
-        .chat-message.sent { margin-left: auto; background-color: #0057b7; color: white; }
-        .chat-message.received { margin-right: auto; background-color: #e9ecef; color: #333; }
-        .chat-message.admin { margin-left: auto; background-color: #28a745; color: white; }
-        .chat-footer { padding: 10px; border-top: 1px solid #ccc; flex-shrink: 0; background-color: #fff; }
-        .chat-footer textarea { resize: none; }
-        .chat-footer button { background-color: #0057b7; border: none; }
-        .chat-footer button:hover { background-color: #ffd700; color: #0057b7; }
-        .chatbot-container { position: fixed; bottom: 20px; right: 20px; z-index: 50; width: 350px; }
-        #chatbot-toggle { width: 100%; padding: 10px; font-weight: bold; background-color: #0057b7; border: none; }
-        #chatbot-toggle:hover { background-color: #ffd700; color: #0057b7; }
-        #chatbot-window { box-shadow: 0 0 20px rgba(0,0,0,0.2); }
-        .chatbot-message { margin-bottom: 0.5rem; }
-        .user-message { text-align: right; color: #0057b7; }
-        .bot-message { text-align: left; color: #333; }
-        .chatbot-buttons { margin-top: 0.5rem; }
+        .flag-stripe { height: 3px; width: 100%; }
+        .blue { background-color: var(--gunp-blue); }
+        .yellow { background: linear-gradient(90deg, var(--gunp-gold) 0%, var(--gunp-gold-soft) 100%); }
+
+        .btn-primary { background: var(--gunp-blue); border-color: var(--gunp-blue); border-radius: 10px; font-weight: 600; }
+        .btn-primary:hover { background: var(--gunp-blue-dark); border-color: var(--gunp-blue-dark); }
+        .btn-secondary { border-radius: 10px; font-weight: 600; }
+        .card { border-radius: var(--gunp-radius); border: none; box-shadow: var(--gunp-shadow-sm); }
+        .alert { border-radius: 10px; border: none; }
+
+        .chat-icon { position: fixed; bottom: 24px; left: 24px; z-index: 1000; }
+        .chat-icon button { width: 58px; height: 58px; font-size: 22px; background: var(--gunp-blue); border: none; box-shadow: var(--gunp-shadow); transition: transform 0.15s ease; }
+        .chat-icon button:hover { background: var(--gunp-gold); color: var(--gunp-blue-deep); transform: translateY(-2px); }
+        .chat-popup { position: fixed; bottom: 92px; left: 24px; width: 360px; display: none; z-index: 1000; background: var(--gunp-surface); border: none; border-radius: var(--gunp-radius); box-shadow: var(--gunp-shadow); flex-direction: column; overflow: hidden; }
+        .chat-header { background: var(--gunp-blue); color: white; padding: 14px 16px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header h5 { margin: 0; font-size: 1rem; font-weight: 700; }
+        .chat-tabs { padding: 10px; background: #f4f6fb; flex-shrink: 0; display: flex; gap: 6px; }
+        .chat-tabs button { flex: 1; font-size: 13px; padding: 8px; border-radius: 8px; background: #e7ebf5; border: none; font-weight: 600; color: var(--gunp-muted); }
+        .chat-tabs button.active { background: var(--gunp-blue); color: white; }
+        .chat-body { height: 380px; overflow-y: auto; padding: 14px; transition: background-color 0.3s; background: #f8fafc; }
+        .chat-message { margin-bottom: 10px; padding: 9px 13px; border-radius: 12px; max-width: 82%; word-wrap: break-word; font-size: 0.92rem; box-shadow: var(--gunp-shadow-sm); }
+        .chat-message.sent { margin-left: auto; background: var(--gunp-blue); color: white; border-bottom-right-radius: 3px; }
+        .chat-message.received { margin-right: auto; background: #fff; color: #333; border-bottom-left-radius: 3px; }
+        .chat-message.admin { margin-left: auto; background: #1a9c5c; color: white; border-bottom-right-radius: 3px; }
+        .chat-footer { padding: 12px; border-top: 1px solid #eceff5; flex-shrink: 0; background: #fff; }
+        .chat-footer textarea { resize: none; border-radius: 10px; }
+        .chat-footer button { background: var(--gunp-blue); border: none; border-radius: 10px; font-weight: 600; }
+        .chat-footer button:hover { background: var(--gunp-gold); color: var(--gunp-blue-deep); }
+
+        .chatbot-container { position: fixed; bottom: 24px; right: 24px; z-index: 50; width: 360px; }
+        #chatbot-toggle { width: 100%; padding: 12px; font-weight: 700; background: var(--gunp-blue); border: none; border-radius: 12px; box-shadow: var(--gunp-shadow); }
+        #chatbot-toggle:hover { background: var(--gunp-gold); color: var(--gunp-blue-deep); }
+        #chatbot-window { box-shadow: var(--gunp-shadow); border-radius: var(--gunp-radius); overflow: hidden; border: none; }
+        #chatbot-window .card-header { background: var(--gunp-blue) !important; }
+        .chatbot-message { margin-bottom: 0.6rem; padding: 8px 12px; border-radius: 12px; max-width: 88%; }
+        .user-message { text-align: right; background: var(--gunp-blue); color: #fff; margin-left: auto; }
+        .bot-message { text-align: left; background: #fff; color: #333; box-shadow: var(--gunp-shadow-sm); }
+        .chatbot-buttons { margin-top: 0.6rem; }
+        .chatbot-buttons .btn { border-radius: 20px; font-size: 0.78rem; }
+
+        @media (max-width: 768px) {
+            main.container { padding: 20px; border-radius: 10px; }
+            .navbar-nav .nav-link { font-size: 0.85rem; padding: 8px 10px !important; }
+        }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
