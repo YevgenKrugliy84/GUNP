@@ -1,35 +1,28 @@
 #!/usr/bin/env bash
-# Daily backup of db.sqlite3 using Python's sqlite3.backup() (safe to run
-# while gunicorn is writing to the DB, unlike `cp`). Keeps 30 days.
+# Daily backup of the GUNP PostgreSQL database via pg_dump (custom format,
+# compressed, safe to run against a live DB). Keeps 30 days.
 # Runs as poweredge (see backup-gunp-db.service / .timer).
 set -euo pipefail
 
 PROJECT_DIR="/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django"
-PYTHON="/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django_venv/bin/python3"
-DB_FILE="$PROJECT_DIR/db.sqlite3"
+ENV_FILE="$PROJECT_DIR/.env"
 BACKUP_DIR="$PROJECT_DIR/backups"
 KEEP_DAYS=30
+
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+DB_NAME="${DB_NAME:-gunp}"
+DB_USER="${DB_USER:-gunp}"
+DB_HOST="${DB_HOST:-localhost}"
+DB_PORT="${DB_PORT:-5432}"
 
 mkdir -p "$BACKUP_DIR"
 
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
-DEST="$BACKUP_DIR/db-$TIMESTAMP.sqlite3"
+DEST="$BACKUP_DIR/db-$TIMESTAMP.dump"
 
-"$PYTHON" - "$DB_FILE" "$DEST" <<'PYEOF'
-import sqlite3
-import sys
+PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -Fc -f "$DEST" "$DB_NAME"
 
-src_path, dest_path = sys.argv[1], sys.argv[2]
-src = sqlite3.connect(src_path)
-dest = sqlite3.connect(dest_path)
-with dest:
-    src.backup(dest)
-src.close()
-dest.close()
-PYEOF
+find "$BACKUP_DIR" -name 'db-*.dump' -mtime "+$KEEP_DAYS" -delete
 
-gzip "$DEST"
-
-find "$BACKUP_DIR" -name 'db-*.sqlite3.gz' -mtime "+$KEEP_DAYS" -delete
-
-echo "Backed up to $DEST.gz"
+echo "Backed up to $DEST"

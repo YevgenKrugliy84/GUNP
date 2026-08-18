@@ -53,12 +53,20 @@ nginx (`/etc/nginx/sites-available/gunp`, публічний порт `8095` —
 **Обов'язково змініть пароль адміністратора після першого входу** (Адмінка → Users → admin →
 "This form does not allow raw password" → посилання "change password form").
 
+**База даних — PostgreSQL** (не SQLite). Роль/база створюються один раз через
+`sudo bash gunp_django/deploy/setup_postgres.sh` (бере пароль із `.env`, ідемпотентний).
+Стара SQLite-база збережена як `gunp_django/backups/db.sqlite3.pre-postgres-migration`
+на випадок звірки — активно більше не використовується.
+
 ## Змінні середовища (`.env`, див. `gunp_django/.env.example`)
 
 - `DJANGO_SECRET_KEY` — секретний ключ Django, обов'язково задати свій перед реальним запуском.
 - `DJANGO_DEBUG` — `True`/`False`.
 - `GUNP_ADMIN_PASSWORD` — пароль для `create_default_admin`, якщо облікового запису `admin` ще немає
   (не задано — команда згенерує й виведе випадковий пароль замість фіксованого дефолту).
+- `DB_ENGINE` — `postgres` (продакшн) або не задано (SQLite, для локальної розробки без
+  інфраструктури). На проді разом із `DB_ENGINE=postgres` задаються `DB_NAME`, `DB_USER`,
+  `DB_PASSWORD`, `DB_HOST`, `DB_PORT`.
 
 ## Структура
 
