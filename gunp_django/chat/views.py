@@ -1,6 +1,7 @@
 import json
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
@@ -8,6 +9,8 @@ from django.views.decorators.http import require_GET, require_POST
 from directory.models import Department
 
 from .models import PrivateChatMessage, PublicChatMessage
+
+User = get_user_model()
 
 
 def _serialize_public(msg, request_user):
@@ -66,9 +69,45 @@ def list_messages(request):
         qs = PrivateChatMessage.objects.filter(
             recipient_kind=recipient_kind, recipient_id=recipient_id, id__gt=since,
         ).order_by('created_at')[:200]
-        return JsonResponse({'messages': [_serialize_private(m, request.user) for m in qs]})
+        messages = [_serialize_private(m, request.user) for m in qs]
+        if request.user.is_staff:
+            PrivateChatMessage.objects.filter(
+                recipient_kind=recipient_kind, recipient_id=recipient_id, is_admin=False, is_read=False,
+            ).update(is_read=True)
+        return JsonResponse({'messages': messages})
 
     return JsonResponse({'messages': []})
+
+
+@user_passes_test(lambda u: u.is_staff)
+@require_GET
+def list_private_threads(request):
+    """Admin-only: one row per distinct user who has an active private conversation."""
+    recipient_ids = (
+        PrivateChatMessage.objects.filter(recipient_kind=PrivateChatMessage.RECIPIENT_USER)
+        .values_list('recipient_id', flat=True)
+        .distinct()
+    )
+    threads = []
+    for recipient_id in recipient_ids:
+        thread_messages = PrivateChatMessage.objects.filter(
+            recipient_kind=PrivateChatMessage.RECIPIENT_USER, recipient_id=recipient_id,
+        )
+        last_message = thread_messages.order_by('-created_at').first()
+        if not last_message:
+            continue
+        user = User.objects.filter(pk=recipient_id).first()
+        unread_count = thread_messages.filter(is_admin=False, is_read=False).count()
+        threads.append({
+            'user_id': recipient_id,
+            'username': user.username if user else f'Користувач #{recipient_id}',
+            'department': user.department if user else '',
+            'last_message': last_message.message,
+            'last_message_at': last_message.created_at.isoformat(),
+            'unread_count': unread_count,
+        })
+    threads.sort(key=lambda t: t['last_message_at'], reverse=True)
+    return JsonResponse({'threads': threads})
 
 
 @login_required

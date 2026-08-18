@@ -6,9 +6,12 @@
     <div class="col-md-3">
         <div class="list-group mb-3">
             <button class="list-group-item list-group-item-action active" onclick="openChat('public', null, this)">Загальний чат</button>
-            <button class="list-group-item list-group-item-action" onclick="openChat('private', {{ user.id }}, this)">
-                {% if user.is_staff %}Чат з користувачами{% else %}Чат з адміністратором{% endif %}
-            </button>
+            {% if user.is_staff %}
+            <div class="list-group-item disabled" id="privateThreadsLabel">Приватні чати з користувачами</div>
+            <div id="privateThreadsList"></div>
+            {% else %}
+            <button class="list-group-item list-group-item-action" onclick="openChat('private', {{ user.id }}, this)">Чат з адміністратором</button>
+            {% endif %}
             {% if user.is_staff %}
             <div class="list-group-item disabled">Статистика по відділах</div>
             {% for dept in departments %}
@@ -38,6 +41,7 @@
     let currentTarget = null;
     let lastId = 0;
     let timer = null;
+    const isStaff = {{ user.is_staff|yesno:"true,false" }};
 
     function openChat(type, targetId, btn) {
         currentType = type;
@@ -82,8 +86,49 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
             body: JSON.stringify(payload),
-        }).then(r => r.json()).then(() => { textarea.value = ''; loadMessages(false); });
+        }).then(r => r.json()).then(() => {
+            textarea.value = '';
+            loadMessages(false);
+            if (isStaff && currentType !== 'private') loadPrivateThreads();
+        });
     });
+
+    function loadPrivateThreads() {
+        if (!isStaff) return;
+        fetch('{% url "chat:threads" %}').then(r => r.json()).then(data => {
+            const list = document.getElementById('privateThreadsList');
+            const previouslyActiveUserId = currentType === 'private' ? currentTarget : null;
+            list.innerHTML = '';
+            if (!data.threads.length) {
+                const empty = document.createElement('div');
+                empty.className = 'list-group-item text-muted small';
+                empty.textContent = 'Активних приватних чатів немає';
+                list.appendChild(empty);
+                return;
+            }
+            data.threads.forEach(thread => {
+                const btn = document.createElement('button');
+                btn.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+                if (thread.user_id === previouslyActiveUserId) btn.classList.add('active');
+                const label = document.createElement('span');
+                label.textContent = thread.username + (thread.department ? ` (${thread.department})` : '');
+                btn.appendChild(label);
+                if (thread.unread_count > 0) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-danger rounded-pill';
+                    badge.textContent = thread.unread_count;
+                    btn.appendChild(badge);
+                }
+                btn.onclick = () => openChat('private', thread.user_id, btn);
+                list.appendChild(btn);
+            });
+        });
+    }
+
+    if (isStaff) {
+        loadPrivateThreads();
+        setInterval(loadPrivateThreads, 5000);
+    }
 
     openChat('public', null, document.querySelector('.list-group-item-action'));
 </script>
