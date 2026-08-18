@@ -3,7 +3,7 @@
 # Must be run with sudo. Run once after `git pull` + venv/requirements are in place.
 set -euo pipefail
 
-DEPLOY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEPLOY_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 
 install -m 644 "$DEPLOY_DIR/gunp.service" /etc/systemd/system/gunp.service
 install -m 644 "$DEPLOY_DIR/nginx_gunp.conf" /etc/nginx/sites-available/gunp

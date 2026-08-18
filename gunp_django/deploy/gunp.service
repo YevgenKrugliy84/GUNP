@@ -9,11 +9,11 @@ Group=poweredge
 WorkingDirectory=/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django
 Environment="PATH=/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django_venv/bin"
 EnvironmentFile=/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/.env
-ExecStart=/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django_venv/bin/gunicorn \
+ExecStart="/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django_venv/bin/gunicorn" \
     --workers 3 \
     --bind 127.0.0.1:8030 \
-    --access-logfile /home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/logs/access.log \
-    --error-logfile /home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/logs/error.log \
+    --access-logfile "/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/logs/access.log" \
+    --error-logfile "/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/logs/error.log" \
     --timeout 60 \
     gunp.wsgi:application
 Restart=always
