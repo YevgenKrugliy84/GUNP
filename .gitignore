@@ -15,6 +15,7 @@ app.log
 # Django project runtime data
 gunp_django/db.sqlite3
 gunp_django/staticfiles/
+gunp_django/logs/
 
 # Environment / secrets
 .env
