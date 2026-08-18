@@ -1,0 +1,9 @@
+[Unit]
+Description=Poll GUNP /healthz/ endpoint
+After=network.target
+
+[Service]
+Type=oneshot
+User=poweredge
+Group=poweredge
+ExecStart="/usr/bin/bash" "/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/deploy/check_health.sh"

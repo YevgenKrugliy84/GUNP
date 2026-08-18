@@ -1,6 +1,7 @@
 [Unit]
 Description=GUNP directory/support portal (Django, Gunicorn)
 After=network.target
+OnFailure=gunp-alert@%n.service
 
 [Service]
 Type=simple

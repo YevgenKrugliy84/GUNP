@@ -1,6 +1,7 @@
 [Unit]
 Description=Daily backup of the GUNP SQLite database
 After=network.target
+OnFailure=gunp-alert@%n.service
 
 [Service]
 Type=oneshot

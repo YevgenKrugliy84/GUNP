@@ -10,6 +10,9 @@ install -m 644 "$DEPLOY_DIR/nginx_gunp.conf" /etc/nginx/sites-available/gunp
 install -m 644 "$DEPLOY_DIR/logrotate_gunp" /etc/logrotate.d/gunp
 install -m 644 "$DEPLOY_DIR/backup-gunp-db.service" /etc/systemd/system/backup-gunp-db.service
 install -m 644 "$DEPLOY_DIR/backup-gunp-db.timer" /etc/systemd/system/backup-gunp-db.timer
+install -m 644 "$DEPLOY_DIR/gunp-alert@.service" "/etc/systemd/system/gunp-alert@.service"
+install -m 644 "$DEPLOY_DIR/check-gunp-health.service" /etc/systemd/system/check-gunp-health.service
+install -m 644 "$DEPLOY_DIR/check-gunp-health.timer" /etc/systemd/system/check-gunp-health.timer
 
 ln -sf /etc/nginx/sites-available/gunp /etc/nginx/sites-enabled/gunp
 
@@ -19,6 +22,7 @@ logrotate -d /etc/logrotate.d/gunp
 systemctl daemon-reload
 systemctl enable --now gunp
 systemctl enable --now backup-gunp-db.timer
+systemctl enable --now check-gunp-health.timer
 systemctl reload nginx
 
 echo "Done. gunp.service status:"

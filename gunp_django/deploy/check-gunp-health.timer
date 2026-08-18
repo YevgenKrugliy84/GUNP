@@ -1,0 +1,10 @@
+[Unit]
+Description=Poll GUNP /healthz/ every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Unit=check-gunp-health.service
+
+[Install]
+WantedBy=timers.target

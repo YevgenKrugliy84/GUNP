@@ -1,0 +1,6 @@
+[Unit]
+Description=Notify on failure of %i
+
+[Service]
+Type=oneshot
+ExecStart="/usr/bin/bash" "/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/deploy/notify_failure.sh" "%i"
