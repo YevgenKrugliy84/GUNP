@@ -1,0 +1,14 @@
+"/home/poweredge/projects/чат фінал майже/чат фінал майже/GUNP/gunp_django/logs/*.log" {
+	weekly
+	missingok
+	rotate 8
+	compress
+	delaycompress
+	notifempty
+	create 0640 poweredge poweredge
+	su poweredge poweredge
+	sharedscripts
+	postrotate
+		systemctl kill -s USR1 --kill-who=main gunp.service >/dev/null 2>&1 || true
+	endscript
+}
