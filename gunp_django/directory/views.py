@@ -13,7 +13,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from .forms import RecordForm, SupportRequestForm
 from .models import Department, DownloadLog, KnowledgeBaseArticle, Record, SupportRequest
-from .services import check_departments, check_ping, generate_chatbot_response
+from .services import generate_chatbot_response
 
 logger = logging.getLogger(__name__)
 
@@ -27,28 +27,24 @@ def index(request):
 
 @require_GET
 def department_statuses(request):
+    """Reads cached ping results (refreshed by the refresh_department_statuses timer/command)
+    instead of pinging synchronously on every page load."""
     departments = Department.objects.exclude(ip_address__isnull=True).exclude(ip_address='')
-    results = check_departments(list(departments))
     statuses = []
-    for dept, result in results:
-        status = 'online' if result['status'] else 'offline'
-        latency = result['latency']
-        color = 'green' if result['status'] else 'red'
-        if result['status'] and latency and latency > 1000:
+    for dept in departments:
+        status = 'online' if dept.last_status else 'offline'
+        color = 'green' if dept.last_status else 'red'
+        if dept.last_status and dept.last_latency and dept.last_latency > 1000:
             color = 'yellow'
-        dept.last_status = result['status']
-        dept.last_latency = latency
         statuses.append({
             'id': dept.id,
             'name': dept.name,
             'ip_address': dept.ip_address,
             'status': status,
             'color': color,
-            'latency': round(latency, 2) if latency else None,
+            'latency': round(dept.last_latency, 2) if dept.last_latency else None,
+            'last_checked': dept.last_checked.isoformat() if dept.last_checked else None,
         })
-    Department.objects.bulk_update(
-        [d for d, _ in results], ['last_status', 'last_latency'],
-    ) if results else None
     return JsonResponse(statuses, safe=False)
 
 

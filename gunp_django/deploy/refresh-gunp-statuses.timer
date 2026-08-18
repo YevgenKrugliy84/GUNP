@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh GUNP department ping statuses every 5 minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+Unit=refresh-gunp-statuses.service
+
+[Install]
+WantedBy=timers.target

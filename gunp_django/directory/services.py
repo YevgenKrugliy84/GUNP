@@ -31,6 +31,26 @@ def check_departments(departments):
         return list(executor.map(lambda dept: (dept, check_ping(dept.ip_address)), departments))
 
 
+def refresh_department_statuses():
+    """Ping every department with an IP and persist the results. Returns the count updated."""
+    from django.utils import timezone
+
+    from .models import Department
+
+    departments = list(Department.objects.exclude(ip_address__isnull=True).exclude(ip_address=''))
+    results = check_departments(departments)
+    now = timezone.now()
+    for dept, result in results:
+        dept.last_status = result['status']
+        dept.last_latency = result['latency']
+        dept.last_checked = now
+    if results:
+        Department.objects.bulk_update(
+            [d for d, _ in results], ['last_status', 'last_latency', 'last_checked'],
+        )
+    return len(results)
+
+
 def generate_chatbot_response(message, support_request_model):
     message = (message or '').lower().strip()
 

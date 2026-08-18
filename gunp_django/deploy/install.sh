@@ -13,6 +13,8 @@ install -m 644 "$DEPLOY_DIR/backup-gunp-db.timer" /etc/systemd/system/backup-gun
 install -m 644 "$DEPLOY_DIR/gunp-alert@.service" "/etc/systemd/system/gunp-alert@.service"
 install -m 644 "$DEPLOY_DIR/check-gunp-health.service" /etc/systemd/system/check-gunp-health.service
 install -m 644 "$DEPLOY_DIR/check-gunp-health.timer" /etc/systemd/system/check-gunp-health.timer
+install -m 644 "$DEPLOY_DIR/refresh-gunp-statuses.service" /etc/systemd/system/refresh-gunp-statuses.service
+install -m 644 "$DEPLOY_DIR/refresh-gunp-statuses.timer" /etc/systemd/system/refresh-gunp-statuses.timer
 
 ln -sf /etc/nginx/sites-available/gunp /etc/nginx/sites-enabled/gunp
 
@@ -23,6 +25,7 @@ systemctl daemon-reload
 systemctl enable --now gunp
 systemctl enable --now backup-gunp-db.timer
 systemctl enable --now check-gunp-health.timer
+systemctl enable --now refresh-gunp-statuses.timer
 systemctl reload nginx
 
 echo "Done. gunp.service status:"
